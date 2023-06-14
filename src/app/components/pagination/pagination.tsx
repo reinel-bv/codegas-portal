@@ -11,9 +11,9 @@ export function PaginationTable({total}: any) {
     setPage(value);
     router.push(`${pathname}?page=${value}`);
   };
-  useEffect(()=>{
-    router.push(`${pathname}?page=${page}`);
-  }, [])
+  // useEffect(()=>{
+  //   router.push(`${pathname}?page=${page}`);
+  // }, [])
   return (
     <Stack spacing={2} sx={{padding: 3}}>
         <Pagination 
