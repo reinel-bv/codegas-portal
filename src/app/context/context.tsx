@@ -21,7 +21,7 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [userData, setUser] = useState<User | null>(null);
   const [idUser, setIdUser] = useState<string | null>(null);
   const [acceso, setAcceso] = useState<string | null>(null);
-  console.log({idUser, acceso})
+
   const listenAuth = (user: User | null) => {
     if (typeof window !== "undefined" && localStorage.getItem("user")) {
       setUser(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : user);
@@ -53,6 +53,7 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
           localStorage.setItem("idUser", JSON.stringify(_id));
           localStorage.setItem("acceso", acceso);
         }
+        console.log({idUser, acceso})
         setUser(user);
         setIdUser(_id);
         setAcceso(acceso);

@@ -1,7 +1,7 @@
 import URL from '../utils/url' 
 
 export const fetchTanques = async (limit: any, start: any, search: any) => {
-    // start = start==0 ?0 :(start-1)*10
+    start = start==0 ?0 :(start-1)*10
     try {
         const response = await fetch(`${URL}/tan/tanque/${limit}/${start}/${search}`, {cache: 'no-store'});
         if (response.status !== 200) {
