@@ -9,7 +9,6 @@ const Pedidos = ({searchParams}: any): ReactElement => {
   let {page, search} = searchParams
   page = page || 0 
   const {idUser, acceso}: any = useContext(DataContext)
-  console.log({idUser, acceso, plus:"+"})
 
   return(
     <>
