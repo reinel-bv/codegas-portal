@@ -27,9 +27,9 @@ const RenderZonas = ({zona, updateValor, addValues}: any) => {
         <TableCell align="center">{nombre}</TableCell>
         <TableCell align="center">
           <FormControl fullWidth sx={{ m: 1 }}>
-          <InputLabel htmlFor="outlined-adornment-amount">Valor Uni</InputLabel>
+          <InputLabel htmlFor={_id.toString()}>Valor Uni</InputLabel>
           <OutlinedInput
-            id="outlined-adornment-amount"
+            id={_id.toString()}
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             label="Amount"
             defaultValue={valorunitario}

@@ -94,7 +94,7 @@ const RenderPedidos = ({_id, codt, razon_social, cedula, direccion, creado, fech
         </TableCell>
       </TableRow>
 
-      <TableRow>
+      {/* <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
@@ -132,7 +132,7 @@ const RenderPedidos = ({_id, codt, razon_social, cedula, direccion, creado, fech
             </Box>
           </Collapse>
         </TableCell>
-      </TableRow>
+      </TableRow> */}
       <Snack show={showSnack} setShow={()=>setShowSnack(false)} message={message} />
        
       <AlertDialog showDialog={showDialog} setShowDialog={()=>setShowDialog(false)}>
@@ -199,7 +199,7 @@ export default function RenderTable({data}: any) {
         </TableBody>
       </Table>
       
-      <PaginationTable total={data[0]?.total} />
+      <PaginationTable total={data[0]?.total ?? 0} />
     </TableContainer>    
   )
   
