@@ -1,10 +1,11 @@
 'use client'
 import React, { ReactElement, useContext } from 'react';
-import { RenderPedidos } from './renderPedido'; 
-
+import { RenderTanques } from '../tanques/renderTanques'; 
+import { Container, Grid, Box, Paper} from '@mui/material';
 import InputSearch from "../components/search/search"
 import {DataContext} from "../context/context"
 
+const limit=10
 const Pedidos = ({searchParams}: any): ReactElement => {
   let {page, search} = searchParams
   page = page || 0 
@@ -12,8 +13,9 @@ const Pedidos = ({searchParams}: any): ReactElement => {
 
   return(
     <>
-      <InputSearch search={search} />
-      {RenderPedidos({page, search, idUser, acceso})}
+        <InputSearch search={search} />
+        {RenderTanques({limit, search, page})} 
+      
     </>
   )
 }

@@ -208,7 +208,16 @@ export default function RenderTable({data}: any) {
       <PaginationTable total={data[0]?.total ?? 0} />
       <Snack show={showSnack} setShow={()=>setShowSnack(false)} message={message} />
       <AlertDialog showDialog={showDialog} setShowDialog={()=>setShowDialog(false)}>
-        {imagencerrar &&<Image src={imagencerrar} alt="codegas colombia" width={200} height={500}/> }
+        {imagencerrar 
+        &&<Image 
+          src={imagencerrar} 
+          alt="codegas colombia" 
+          width={200} 
+          height={500}
+          placeholder="blur"
+          blurDataURL={imagencerrar}
+          /> 
+        }
       </AlertDialog>
     </TableContainer>    
   )

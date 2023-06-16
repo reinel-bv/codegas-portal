@@ -22,7 +22,8 @@ const menuItems = [
   {link: "informes", text: "Informes", icon: <AssignmentTurnedIn />},
   {link: "crear-usuario", text: "Crear Usuario", icon: <People />}, 
   {link: "crear-pedido", text: "Crear Pedido", icon: <BorderColor />},
-  {link: "crear-tanque", text: "Crear Tanque", icon: <PropaneTank />}
+  {link: "crear-tanque", text: "Crear Tanque", icon: <PropaneTank />},
+  {link: "order", text: "Order", icon: <PropaneTank />}
 ]
 export const mainListItems = (
   <React.Fragment>
