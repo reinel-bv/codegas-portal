@@ -127,8 +127,6 @@ export default function RenderTable({data}: any) {
   const [message, setMessage] = useState("");
   const [showDialog, setShowDialog] = useState(false);
   const [imagencerrar, setImagenCerrar] = useState();
-  // const [newFechaEntrega, setFechaEntrega] = useState(fechaentrega)
-  // const [newEstado, setNewEstado] = useState(estado)
 
   const addValues = (id: any, newFechaEntrega: any) => {
     const index = valorWithArray.some(({ id: _id }) => _id === id);
@@ -161,7 +159,7 @@ export default function RenderTable({data}: any) {
     }
     setNewValorWithArray(data)
   }, [valorWithArray])
-  console.log(valorWithArray)
+ 
   return (
     <TableContainer component={Paper}>
       {
