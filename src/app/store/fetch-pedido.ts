@@ -19,6 +19,7 @@ export const UpdateDatePedido = async(id: any, date: any) =>{
     try {
         const response = await fetch(`${URL}/ped/pedido/asignarFechaEntrega/${id}/${date}`, {cache: 'no-store'});
         const data = await response.json();
+        console.log(data)
         return data
     } catch (error){
         console.error(error)

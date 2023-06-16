@@ -1,6 +1,6 @@
 'use client' 
-import { Fragment, useState } from 'react';
-import { TableRow, TableCell, Box, Collapse, Button, Checkbox, Paper, Table, TableBody, TableContainer, TableHead } from '@mui/material';
+import { Fragment, useState, useEffect } from 'react';
+import { TableRow, TableCell, Box, Collapse, Button, Checkbox, Paper, Table, TableBody, TableContainer, TableHead, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import moment from "moment"
 import {KeyboardArrowDown, KeyboardArrowUp} from '@mui/icons-material';
@@ -10,10 +10,14 @@ import {colors} from "../utils/colors"
 import { PaginationTable } from "../components/pagination/pagination";
 import {UpdateDatePedido, UpdateStatePedido} from "../store/fetch-pedido"
 import {Date} from "../components/date"
+import {Snack} from "../components/snackBar"
+import {AlertDialog} from "../components/alertDialog/alertDialog"
+import Image from "next/image"
+
 const {espera, noentregado, innactivo, activo, asignado, otro} = colors
 
 const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fechasolicitud, 
-  fechaentrega, forma, kilos, valorunitario, placa, novedades, estado, entregado, imagencerrar}: any) => {
+  fechaentrega, forma, kilos, valorunitario, placa, novedades, estado, entregado, imagencerrar, addValues}: any) => {
   const [open, setOpen] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [newEstado, setNewEstado] = useState(estado)
@@ -48,7 +52,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
           >
             <TableCell align="center">
               <Checkbox
-                // onChange={()=>addValues(_id, fechaentrega)}
+                onChange={()=>addValues(_id, fechaentrega)}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             </TableCell>
@@ -85,55 +89,94 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
               {novedades &&<Button variant="contained">Si</Button>}
             </TableCell>
             <TableCell align="center">
-              {/* {imagencerrar &&<Button variant="contained" onClick={()=>{setShowDialog(true), setImagenCerrar(imagencerrar)}}>Si</Button>} */}
+              {imagencerrar &&<Button variant="contained" onClick={()=>setShowDialog(true)}>Si</Button>}
             </TableCell>
           </TableRow>
-      {/* <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Datos adicionales
-              </Typography>
-              <TableContainer>
-                <Table sx={{ minWidth: 650 }} aria-label="purchases">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="center">Serie</TableCell>
-                      <TableCell align="center">Año Fab.</TableCell>
-                      <TableCell align="center">Ubicación Tan</TableCell>
-                      <TableCell align="center">Ultima Rev Tot</TableCell>
-                      <TableCell align="center">Propiedad</TableCell>
-                      <TableCell align="center">Punto</TableCell>
-                      <TableCell align="center">Usuario</TableCell>
-                      <TableCell align="center">Codt</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center">{serie}</TableCell>
-                      <TableCell align="center">{anofabricacion}</TableCell>
-                      <TableCell align="center">{ubicacion}</TableCell>
-                      <TableCell align="center">{ultimrevtotal}</TableCell>
-                      <TableCell align="center">{propiedad}</TableCell>
-                      <TableCell align="center">{direccion}</TableCell>
-                      <TableCell align="center">{razon_social}</TableCell>
-                      <TableCell align="center">{codt}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow> */}
+          <TableRow>
+            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
+              <Collapse in={open} timeout="auto" unmountOnExit>
+                <Box sx={{ margin: 1 }}>
+                  <Typography variant="h6" gutterBottom component="div">
+                    Datos adicionales
+                  </Typography>
+                  <TableContainer>
+                    <Table sx={{ minWidth: 650 }} aria-label="purchases">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="center">F. Solicitud</TableCell>
+                          <TableCell align="center">Solicitud</TableCell>
+                          <TableCell align="center">Kilos</TableCell>
+                          <TableCell align="center">Valor</TableCell>
+                          <TableCell align="center">Cedula</TableCell>
+                          <TableCell align="center">Direccion</TableCell>
+                          <TableCell align="center">F Creación</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell component="th" scope="row" align="center">
+                            {fechasolicitud}
+                          </TableCell>
+                          <TableCell align="center">{forma}</TableCell>
+                          <TableCell align="center">{kilos}</TableCell>
+                          <TableCell align="center">{valorunitario}</TableCell>
+                          <TableCell align="center">{cedula}</TableCell>
+                          <TableCell align="center">{direccion}</TableCell>
+                          <TableCell align="center">{moment(creado).format('YYYY-MM-DD HH:mm')}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              </Collapse>
+            </TableCell>
+          </TableRow>
+          <Snack show={showSnack} setShow={()=>setShowSnack(false)} message={message} />
+          
+          <AlertDialog showDialog={showDialog} setShowDialog={()=>setShowDialog(false)}>
+            {imagencerrar &&<Image src={imagencerrar} alt="codegas colombia" width={200} height={500}/> }
+          </AlertDialog>
     </Fragment>
   )
 }
 
 export default function RenderTable({tanques}: any) {
+  const [valorWithArray, setValorWithArray] = useState<{ id: any; newFechaEntrega: any }[]>([]);
+  const [newValorWithArray, setNewValorWithArray] = useState<string | undefined>();
+
+  const addValues = (id: any, newFechaEntrega: any) => {
+    const index = valorWithArray.some(({ id: _id }) => _id === id);
+    if (!index) {
+      setValorWithArray((state) => [...state, { id, newFechaEntrega }]);
+    } else {
+      setValorWithArray(valorWithArray.filter(({ id: _id }) => _id !== id));
+    }
+  };
+  useEffect(()=> {
+    let data = ''
+    for(let i=0; i<valorWithArray.length; i ++){
+      data += valorWithArray[i].id
+      data += ','
+    }
+    setNewValorWithArray(data)
+  }, [valorWithArray])
+
   return(
     <TableContainer component={Paper}>
+      {
+        newValorWithArray
+        &&<Button variant="contained"  sx={{ marginTop: 1, marginLeft: 1 }}>
+          <Link 
+            href={`pedidos/${newValorWithArray}/${moment().format('YYYY-MM-DD')}`} 
+            style={{
+              color: "#ffffff", 
+              textDecoration: 'none'
+            }}
+          >
+            Vehiculos
+          </Link>
+        </Button>
+      }
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
           <TableRow>
@@ -151,7 +194,7 @@ export default function RenderTable({tanques}: any) {
           </TableHead>
           <TableBody>
           {
-            tanques.map((e: any, key: string)=> (<RenderTanques {...e} key={key} /> ))
+            tanques.map((e: any, key: string)=> (<RenderTanques {...e} key={key} addValues={addValues} /> ))
           }
           
         </TableBody>
