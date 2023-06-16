@@ -141,7 +141,7 @@ export default function RenderTable({zona}: any) {
           />
         </TableBody>
       </Table>
-      <PaginationTable total={zona[0]?.total} />
+      <PaginationTable total={zona[0]?.total ??0} />
       <Snack show={showSnack} setShow={()=>setShowSnack(false)} message={message} />
     </TableContainer>
   )
