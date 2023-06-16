@@ -106,7 +106,7 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/pedidos">
+                <Link href="/">
                     Recordar contraseña?
                 </Link>
               </Grid>
