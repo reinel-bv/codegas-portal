@@ -1,43 +1,73 @@
 'use client' 
 import { Fragment, useState } from 'react';
-import { TableRow, TableCell, Box, Collapse, Button, Typography, Paper, Table, TableBody, TableContainer, TableHead } from '@mui/material';
+import { TableRow, TableCell, Box, Collapse, Button, Checkbox, Paper, Table, TableBody, TableContainer, TableHead } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import moment from "moment"
 import {KeyboardArrowDown, KeyboardArrowUp} from '@mui/icons-material';
- 
+import {SelectState} from "../components/selecState"
+import {colors} from "../utils/colors"
 import { PaginationTable } from "../components/pagination/pagination";
  
 
+const {espera, noentregado, innactivo, activo, asignado, otro} = colors
 
-const RenderTanques = ({_id, codigoactivo, capacidad, fabricante, registroonac, fechaUltimaRev: fechaMto, nplaca: placaMan, serie, anofabricacion, existeTanque: ubicacion, ultimrevtotal, propiedad, direccion, razon_social, codt, data, total}: any) => {
+const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fechasolicitud, 
+  fechaentrega, forma, kilos, valorunitario, placa, novedades, estado, entregado, imagencerrar}: any) => {
   const [open, setOpen] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+  const [newEstado, setNewEstado] = useState(estado)
+  const [newFechaEntrega, setFechaEntrega] = useState(fechaentrega)
+  const background=newEstado=="espera" ?espera :newEstado=="noentregado" ?noentregado :newEstado=="innactivo" ?innactivo :newEstado=="activo" &&!placa && !entregado ?activo :newEstado=="activo" && !entregado ?asignado :otro
   return (
     <Fragment> 
       <TableRow
-        key={_id}
-      >
-        <TableCell align="center" component="th">
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
+            key={_id}
+            sx={{ 
+              background
+            }}
           >
-          {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-          </IconButton>
-        </TableCell>
-        <TableCell align="center">{_id}</TableCell>
-        <TableCell align="center">{_id}</TableCell>
-        <TableCell align="center">{_id}</TableCell>
-        <TableCell align="center">{_id}</TableCell>
-        <TableCell align="center">{_id} </TableCell>
-        <TableCell align="center">{_id} </TableCell>
-        <TableCell align="center">
-          
-        </TableCell>
-        <TableCell align="center">
-          <Button variant="contained" onClick={()=>setShowDialog(true)}>Si</Button>
-        </TableCell>
-      </TableRow>
+            <TableCell align="center">
+              <Checkbox
+                // onChange={()=>addValues(_id, fechaentrega)}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            </TableCell>
+            <TableCell align="center">
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={() => setOpen(!open)}
+              >
+              {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+              </IconButton>
+            </TableCell>
+            <TableCell align="center" component="th">{_id}</TableCell>
+            <TableCell align="center">{codt}</TableCell>
+            <TableCell align="center">{razon_social}</TableCell>
+            <TableCell align="center">
+              {/* {
+                newFechaEntrega 
+                ?moment(newFechaEntrega).format('YYYY-MM-DD')
+                :<Date setValueDate={(e: any) =>{ updateDate(_id, e), setFechaEntrega(e)}} />
+              } */}
+            </TableCell>
+            <TableCell align="center">
+              {/* <SelectState newEstado={newEstado} setNewEstado={(e: any)=>{setNewEstado(e), updateStatus(_id, e)}} /> */}
+            </TableCell>
+            <TableCell align="center">
+              <Button variant="contained">
+                {/* <Link href={`pedidos/${_id}/${moment(newFechaEntrega).format('YYYY-MM-DD')}`} style={{color: "#ffffff", textDecoration: 'none'}}>
+                  {placa ?placa :"Sin Placa"}
+                </Link> */}
+              </Button>
+            </TableCell>
+            <TableCell align="center">
+              {novedades &&<Button variant="contained">Si</Button>}
+            </TableCell>
+            <TableCell align="center">
+              {/* {imagencerrar &&<Button variant="contained" onClick={()=>{setShowDialog(true), setImagenCerrar(imagencerrar)}}>Si</Button>} */}
+            </TableCell>
+          </TableRow>
       {/* <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
           <Collapse in={open} timeout="auto" unmountOnExit>
@@ -86,16 +116,17 @@ export default function RenderTable({tanques}: any) {
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
-            <TableRow>
+          <TableRow>
               <TableCell align="center">&nbsp;</TableCell>
-              <TableCell align="center">Codigo Act.</TableCell>
-              <TableCell align="center">Capacidad</TableCell>
-              <TableCell align="center">Fabricante</TableCell>
-              <TableCell align="center">Registro On.</TableCell>
-              <TableCell align="center">Fecha Mto</TableCell>
-              <TableCell align="center">Placa Man.</TableCell>
-              <TableCell align="center">Alertas</TableCell>
-              <TableCell align="center">Detalle</TableCell>
+              <TableCell align="center">&nbsp;</TableCell>
+              <TableCell align="center">N pedido</TableCell>
+              <TableCell align="center">Codt</TableCell>
+              <TableCell align="center">Razon Social</TableCell>
+              <TableCell align="center">F Entrega</TableCell>
+              <TableCell align="center">Estado</TableCell>
+              <TableCell align="center">Placa</TableCell>
+              <TableCell align="center">Obervacion</TableCell>
+              <TableCell align="center">Imagen</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

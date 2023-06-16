@@ -14,7 +14,6 @@ import {
 } from '@mui/icons-material/';
 import Link from 'next/link'
 const menuItems = [
-  {link: "pedidos", text: "Pedidos", icon: <Dashboard />},
   {link: "zonas", text: "Zonas", icon: <Map />},
   {link: "tanques", text: "Tanques", icon: <FireTruck/>},
   {link: "revisiones", text: "Revisiones", icon: <VerifiedUser />},
@@ -23,7 +22,7 @@ const menuItems = [
   {link: "crear-usuario", text: "Crear Usuario", icon: <People />}, 
   {link: "crear-pedido", text: "Crear Pedido", icon: <BorderColor />},
   {link: "crear-tanque", text: "Crear Tanque", icon: <PropaneTank />},
-  {link: "order", text: "Order", icon: <PropaneTank />}
+  {link: "order", text: "Pedidos", icon: <Dashboard />}
 ]
 export const mainListItems = (
   <React.Fragment>
