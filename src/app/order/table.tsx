@@ -4,11 +4,12 @@ import { TableRow, TableCell, Box, Collapse, Button, Checkbox, Paper, Table, Tab
 import IconButton from '@mui/material/IconButton';
 import moment from "moment"
 import {KeyboardArrowDown, KeyboardArrowUp} from '@mui/icons-material';
+import Link from 'next/link';
 import {SelectState} from "../components/selecState"
 import {colors} from "../utils/colors"
 import { PaginationTable } from "../components/pagination/pagination";
- 
-
+import {UpdateDatePedido, UpdateStatePedido} from "../store/fetch-pedido"
+import {Date} from "../components/date"
 const {espera, noentregado, innactivo, activo, asignado, otro} = colors
 
 const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fechasolicitud, 
@@ -16,8 +17,27 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
   const [open, setOpen] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [newEstado, setNewEstado] = useState(estado)
+  const [showSnack, setShowSnack] = useState(false);
+  const [message, setMessage] = useState("");
   const [newFechaEntrega, setFechaEntrega] = useState(fechaentrega)
   const background=newEstado=="espera" ?espera :newEstado=="noentregado" ?noentregado :newEstado=="innactivo" ?innactivo :newEstado=="activo" &&!placa && !entregado ?activo :newEstado=="activo" && !entregado ?asignado :otro
+  const updateDate = async (id: any, date: any) => {
+    const {status} = await UpdateDatePedido(id, date)
+    if (status) {
+      setShowSnack(true)
+      setMessage("Fecha Actualizada")
+      setFechaEntrega(date)
+    }
+  }
+
+  const updateStatus = async (id: any, state: any) => {
+    const {status} = await UpdateStatePedido(id, state)
+    if (status) {
+      setShowSnack(true)
+      setMessage(`estado ${state} cambiado!`)
+      setNewEstado(state)
+    }
+  }
   return (
     <Fragment> 
       <TableRow
@@ -45,20 +65,20 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
             <TableCell align="center">{codt}</TableCell>
             <TableCell align="center">{razon_social}</TableCell>
             <TableCell align="center">
-              {/* {
+              {
                 newFechaEntrega 
                 ?moment(newFechaEntrega).format('YYYY-MM-DD')
                 :<Date setValueDate={(e: any) =>{ updateDate(_id, e), setFechaEntrega(e)}} />
-              } */}
+              }
             </TableCell>
             <TableCell align="center">
-              {/* <SelectState newEstado={newEstado} setNewEstado={(e: any)=>{setNewEstado(e), updateStatus(_id, e)}} /> */}
+              <SelectState newEstado={newEstado} setNewEstado={(e: any)=>{setNewEstado(e), updateStatus(_id, e)}} />
             </TableCell>
             <TableCell align="center">
               <Button variant="contained">
-                {/* <Link href={`pedidos/${_id}/${moment(newFechaEntrega).format('YYYY-MM-DD')}`} style={{color: "#ffffff", textDecoration: 'none'}}>
+                <Link href={`pedidos/${_id}/${moment(newFechaEntrega).format('YYYY-MM-DD')}`} style={{color: "#ffffff", textDecoration: 'none'}}>
                   {placa ?placa :"Sin Placa"}
-                </Link> */}
+                </Link>
               </Button>
             </TableCell>
             <TableCell align="center">
