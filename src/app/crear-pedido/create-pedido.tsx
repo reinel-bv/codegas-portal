@@ -12,7 +12,7 @@ import moment from 'moment';
 import {DataContext} from '../context/context'
 
 
-export default function CrearPedido({data, puntos}: any) {
+export default function CrearPedido({user, puntos}: any) {
   const {idUser: usuarioCrea}: any = useContext(DataContext)
 
   const router = useRouter();
@@ -77,7 +77,7 @@ export default function CrearPedido({data, puntos}: any) {
       setMessage("Pedido Guardado con exito")
     }
   }
- 
+  console.log(user)
  
   return (
     <Container component="main" maxWidth="xs">
@@ -152,7 +152,7 @@ export default function CrearPedido({data, puntos}: any) {
                   freeSolo
                   id="usuarioId"
                   disableClearable
-                  options={data.map((option: any) => ({ ...option, key: option._id }))}
+                  options={user}
                   getOptionLabel={(option) => option.razon_social?? ""}
                   onChange={handleChangeSelect}
                   // onClose={()=>alert("close")}

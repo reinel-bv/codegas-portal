@@ -1,4 +1,3 @@
-'use cliente'
 import React, { ReactElement } from 'react';
 
 import { RenderTanques } from './renderTanques'; 
