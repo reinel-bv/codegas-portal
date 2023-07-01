@@ -1,6 +1,6 @@
 'use client';
 import React, { ReactElement, useState } from 'react';
-import { MenuItem, Select, Button, Grid, Paper, InputBase } from '@mui/material';
+import { MenuItem, Select, Button, Grid, Paper, InputBase, FormControlLabel, Checkbox } from '@mui/material';
 
 import { InputZonaProps } from "./input_zona_props";
 
@@ -18,10 +18,15 @@ const PaperContent = ({ children }: { children: React.ReactNode }) => {
 }
 
 const InputZones = ({ onSend }: { onSend: (data: InputZonaProps) => void }): ReactElement => {
-  const [data, setData] = useState<InputZonaProps>({ typeValue: 'porcentaje', replace: 0, valor: 0 });
+  const [data, setData] = useState<InputZonaProps>({ typeValue: 'porcentaje', replace: 0, valor: 0, allUsers: false });
 
   const handleChange = (prop: keyof InputZonaProps, event: React.ChangeEvent<HTMLInputElement | { value: unknown }>) => {
-    setData({ ...data, [prop]: Number(event.target.value) });
+    if (prop==='allUsers') {
+      const inputElement = event?.target as HTMLInputElement;
+      setData({ ...data, [prop]: inputElement?.checked });
+    }
+    else setData({ ...data, [prop]: prop==='typeValue' ?event.target.value :Number(event.target.value) });
+  
   }
 
   return (
@@ -36,15 +41,15 @@ const InputZones = ({ onSend }: { onSend: (data: InputZonaProps) => void }): Rea
         </PaperContent>
         <Grid item xs={12} sm={2}>
           <Select
-            labelId="demo-simple-select-standard-label"
-            id="demo-simple-select-standard"
+            labelId="typeValue"
+            id="typeValue"
             value={data?.typeValue || 'porcentaje'}
             onChange={(e: any) => handleChange('typeValue', e)}
-            label="Age"
+            label="typeValue"
             sx={{ marginLeft: 1, marginTop: 2, p: '0px', display: 'flex', alignItems: 'center', width: "100%" }}
           >
             <MenuItem value="porcentaje">Porcentaje</MenuItem>
-            <MenuItem value="replace">Reemplazar</MenuItem>
+            <MenuItem value="adicion">Adición</MenuItem>
           </Select>
         </Grid>
         <PaperContent>
@@ -53,7 +58,14 @@ const InputZones = ({ onSend }: { onSend: (data: InputZonaProps) => void }): Rea
             placeholder={data?.typeValue === "porcentaje" ? "% valor en porcentaje" : "$ valor a sumar o restar"}
             onChange={(e) => handleChange('valor', e)}
           />
-        </PaperContent>
+        </PaperContent> 
+        <Grid item xs={12} sm={2} sx={{ marginTop: 3 }}>
+          <FormControlLabel control={
+            <Checkbox onChange={(e: any) => handleChange('allUsers', e)} />
+            } 
+            label="Todos los usuarios" 
+          />
+        </Grid>
         <Grid item xs={12} sm={2}>
           <Button
             variant="contained"
@@ -63,6 +75,7 @@ const InputZones = ({ onSend }: { onSend: (data: InputZonaProps) => void }): Rea
             Guardar
           </Button>
         </Grid>
+       
       </Grid>
     </div>
   );
