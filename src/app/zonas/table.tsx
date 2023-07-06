@@ -9,19 +9,21 @@ import InputZones from '../components/input_zones/input_zones';
 
 const RenderZonas = ({zona, updateValor, addValues}: any) => {
   return ( 
-    zona.map(({_id, codt, razon_social, nombrezona, nombre, valorunitario, idcliente, isCheked}: any, index: any)=> {
+    zona.map(({_id, codt, razon_social, nombrezona, direccion, nombre, valorunitario, idcliente, isCheked}: any, index: any)=> {
     return (
       <TableRow
         key={index}
       >
         <TableCell component="th" scope="row" align="center">
           <Checkbox
-            checked={isCheked}
-            onChange={(e)=>addValues(idcliente, valorunitario, e)}
+            checked={isCheked  ?isCheked :false}
+            onChange={(e)=>addValues(idcliente, valorunitario, _id, e)}
             inputProps={{ 'aria-label': 'controlled' }}
           />
+          {_id}
         </TableCell>
         <TableCell align="center" component="th">{nombrezona}</TableCell>
+        <TableCell align="center" component="th">{direccion}</TableCell>
         <TableCell align="center">{codt}</TableCell>
         <TableCell align="center">{razon_social}</TableCell>
         <TableCell align="center">{nombre}</TableCell>
@@ -52,6 +54,7 @@ export default function RenderTable({zona}: any) {
   const searchParams = useSearchParams();
   const page = searchParams.get('page');
   const newValue = searchParams.get('newValue');
+  const search = searchParams.get('search');
 
 
   const [newValorUnitario, setNewValorUnitario] = useState({})
@@ -71,7 +74,7 @@ export default function RenderTable({zona}: any) {
         valorUnitario
       }
     })
- 
+   
     if( value || replace|| type) saveData(data, allUsers, type, typeValue)
   }, [newValorUnitario])
 
@@ -92,7 +95,11 @@ export default function RenderTable({zona}: any) {
       setSeverity('success')
       setValorWithArray([])
       setIsCheked(false)
-      router.push(`${pathname}?page=${page}&newValue=${replaceParams}`, undefined)
+      router.push(`${pathname}?page=${page}&search=${search}&newValue=${replaceParams}`, undefined)
+    }
+    else if(!status){
+      setMessage("Houston tenemos un problema")
+      setSeverity('error')
     }
   }
 
@@ -101,10 +108,10 @@ export default function RenderTable({zona}: any) {
       return{
         ...e,
         _id: e.idcliente,
-        isCheked: event.target.checked  
+        isCheked: event.target.checked
       }
     })
-    console.log(valorWithArray)
+    
     if(event.target.checked) {setValorWithArray(data), setIsCheked(true)}
     if(!event.target.checked) {setValorWithArray([]), setIsCheked(false)}
     setNewZona(data)
@@ -121,17 +128,24 @@ export default function RenderTable({zona}: any) {
       }
     }
   }
-  const addValues = (id: any, valorunitario: number, event: any) => {
+  const addValues = (idCliente: any, valorunitario: number, id: any, event: any) => {
  
-    const index = valorWithArray.some(({ _id }) => _id === id);
+    const index = valorWithArray.some(({ _id }) => _id === idCliente);
     if (!index) {
-      setValorWithArray((state) => [...state, {_id: id, valorunitario}])
+      setValorWithArray((state) => [...state, {_id: idCliente, valorunitario}])
     }else{
-      setValorWithArray(valorWithArray.filter(({_id})=> {return _id !== id})) 
+      setValorWithArray(valorWithArray.filter(({_id})=> {return _id !== idCliente})) 
     }
    
-    // const updateZona= newZona.map((e): any=>{if(e._id===id) return {...e, isCheked: event.target.checked} })
-    // setNewZona()
+    const updateZona = newZona.map((e: { _id: any; }) => {
+      if (e._id === id) {
+        return { ...e, isCheked: event.target.checked };
+      }
+      return e;
+    });
+  
+    setNewZona(updateZona);
+    
   } 
   const validateIfIsSelectd = (e: any) => {
     if(e.allUsers){
@@ -145,7 +159,6 @@ export default function RenderTable({zona}: any) {
         setNewValorUnitario(e)
       }
     }
-      
   }
 
   return(
@@ -162,6 +175,7 @@ export default function RenderTable({zona}: any) {
                 />
               </TableCell>
               <TableCell align="center">Zona</TableCell>
+              <TableCell align="center">Dirección</TableCell>
               <TableCell align="center">Codt</TableCell>
               <TableCell align="center">Razon Social</TableCell>
               <TableCell align="center">Nombre</TableCell>

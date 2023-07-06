@@ -1,6 +1,7 @@
 import URL from '../utils/url' 
  
 export const getUsers = async (start: any, limit: any, access: any, search: any) => {
+    start = start==0 ?0 :(start-1)*10
     try {
         const response = await fetch(`${URL}/users/acceso/${limit}/${start}/${access}/${search}`, {
             next: { revalidate: 10 } 
