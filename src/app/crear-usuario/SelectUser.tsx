@@ -45,24 +45,20 @@ export default function SelectUser({data, userId, zona, puntos}: any) {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Nuevo Tanque 
+          Nuevo Usuario 
         </Typography>
         
         {
           activeStep===0
-          ?<Step1 data={data} />
+          ?<Step1 data={data} userId={userId} setActiveStep={()=>setActiveStep(1)}/>
           :activeStep===1
           &&<Step2 userId={userId} zona={zona} puntos={puntos} />
         }
 
 
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 2 }}>
-          <Button onClick={()=>setActiveStep(activeStep-1)}>
+          <Button onClick={()=>setActiveStep(0)}>
             {activeStep>0 &&'Anterior'}
-          </Button>
-           
-          <Button onClick={()=>setActiveStep(activeStep+1)}>
-            {activeStep===0 && userId  &&'Siguiente'}
           </Button>
         </Box>
       </Box>

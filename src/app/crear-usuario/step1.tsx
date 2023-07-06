@@ -8,7 +8,7 @@ import {createUser} from "../store/fetch-user"
 import {DataContext} from '../context/context'
 
 
-export default function Step1({data}: any) {
+export default function Step1({data, userId, setActiveStep}: any) {
   const {createUserFirebase}: any = useContext(DataContext)
   const [idPadre, setIdPadre] = useState('');
   const router = useRouter();
@@ -22,6 +22,24 @@ export default function Step1({data}: any) {
 
   const [newAcceso, setNewAcceso] = useState('')
   const [newTipo, setTipo] = useState('')
+  const handleEdit =  async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const newData = {
+      email: data.get('email'),
+      cedula: data.get('cedula'),
+      nombre: data.get('nombre'),
+      celular: data.get('celular'),
+      codMagister: data.get('codMagister'),
+      razon_social: data.get('razon_social'),
+      direccion_factura: data.get('direccion_factura'),
+      codt: data.get('codt'),
+      valorUnitario: data.get('valorUnitario'),
+      acceso: data.get('acceso'),
+      idPadre: idPadre,
+    };
+    setActiveStep();
+  }
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -84,7 +102,7 @@ export default function Step1({data}: any) {
         }}
       >
        
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" noValidate onSubmit={userId ?handleEdit :handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
@@ -162,10 +180,10 @@ export default function Step1({data}: any) {
           <Button
             type="submit"
             fullWidth
-            variant="contained"
+            // variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Guardar Usuario
+            Siguiente
           </Button>
         </Box>
       </Box>

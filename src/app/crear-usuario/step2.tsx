@@ -15,14 +15,16 @@ import {
   TableRow,
   MenuItem,
   Select,
-  InputLabel
+  InputLabel,
+  IconButton
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import {Add, Delete} from '@mui/icons-material';
 import { Snack } from '../components/snackBar';
 import { AlertDialog } from '../components/alertDialog/alertDialog';
-import { addPuntoUser } from '../store/fetch-punto';
+import AlertConfirm from '../components/alertConfirm/alertConfirm';
+import { addPuntoUser, DeletePunto } from '../store/fetch-punto';
 
-const renderPunto = (puntos: any[]) => (
+const RenderPunto = ({puntos, handleDelete}: any) => (
   <TableContainer>
     <Table>
       <TableHead>
@@ -31,15 +33,21 @@ const renderPunto = (puntos: any[]) => (
           <TableCell>Zona</TableCell>
           <TableCell>Capacidad</TableCell>
           <TableCell>Observacion</TableCell>
+          <TableCell></TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {puntos.map(({ _id, direccion, nombrezona, capacidad, observacion }) => (
+        {puntos.map(({ _id, direccion, nombrezona, capacidad, observacion }: any) => (
           <TableRow key={_id}>
             <TableCell>{direccion}</TableCell>
             <TableCell>{nombrezona}</TableCell>
             <TableCell>{capacidad}</TableCell>
             <TableCell>{observacion}</TableCell>
+            <TableCell> 
+              <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(_id, direccion)}>
+                <Delete />
+              </IconButton>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -51,7 +59,10 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
   const [showSnack, setShowSnack] = useState(false);
   const [message, setMessage] = useState('');
   const [showDialog, setShowDialog] = useState(false);
-  
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [puntosList, setPuntosList] = useState(puntos);
+  const [userSelected, setUserSelected] = useState({direccion: '', id: ''});
+
   const [selectedZona, setSelectedZona] = useState('');
   const handleZonaChange = (id: any) => {
     const label = zona.find(zona => zona._id === id).nombre;
@@ -78,13 +89,28 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
       setMessage('Ubicación Guardada con éxito');
       setShowDialog(false);
 
-      const updatedPunto = [...puntos, { direccion: data.direccion, nombrezona: selectedZona, capacidad: data.capacidad, observacion: data.observacion }];
+      const updatedPunto = [...puntosList, { direccion: data.direccion, nombrezona: selectedZona, capacidad: data.capacidad, observacion: data.observacion }];
       setPuntosList(updatedPunto);
     }
   };
+  const handleDelete = (id: any, direccion: any) => {
+    setUserSelected({id, direccion})
+    setOpenConfirm(true)
+  };
+  const confirmDelete = async () => {
+    const updatedPuntosList = puntosList.filter(({_id}) => _id !== userSelected.id);
+    setPuntosList(updatedPuntosList);
+   
+    setOpenConfirm(false)
 
-  const [puntosList, setPuntosList] = useState(puntos);
+    const {status} = await DeletePunto(userSelected.id)
+    if (status) {
+      setShowSnack(true)
+      setMessage("Eliminado!")
+    }
 
+
+  }
   return (
     <Container component="main" maxWidth="xl">
       <CssBaseline />
@@ -96,8 +122,11 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
           alignItems: 'center',
         }}
       >
-        {renderPunto(puntosList)}
-        <Button color="primary" startIcon={<AddIcon />} onClick={() => setShowDialog(true)}>
+        <RenderPunto 
+          puntos={puntosList}
+          handleDelete={handleDelete} 
+        />
+        <Button color="primary" startIcon={<Add />} onClick={() => setShowDialog(true)}>
           Agregar
         </Button>
       </Box>
@@ -116,12 +145,18 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
                 </FormControl>
             </Grid>
             <Grid item xs={12} sm={12}>
-                <FormControl sx={{ width: 500 }}>
-                <TextField id="observacion" label="Observacion Ingreso Vehiculo" name="observacion"/>
-                </FormControl>
+              <FormControl sx={{ width: 500 }}>
+                <TextField 
+                  id="observacion"
+                  label="Observacion Ingreso Vehiculo"
+                  name="observacion"
+                  multiline
+                  rows={4}
+                />
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={12}>
-              <FormControl fullWidth>
+              <FormControl  sx={{ width: 500 }}>
                 <InputLabel id="idZona">Zonas</InputLabel>
                 <Select
                   labelId="idZona"
@@ -144,6 +179,12 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
           </Grid>
         </Box>
       </AlertDialog>
+      <AlertConfirm 
+        openConfirm={openConfirm} 
+        handleConfirm={()=>confirmDelete()} 
+        handleClose={()=>setOpenConfirm(false)} 
+        title={userSelected?.direccion} 
+      />
     </Container>
   );
 }

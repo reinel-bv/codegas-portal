@@ -45,7 +45,7 @@ export default function Step4({ tanqueId, alerts }: { tanqueId: any; alerts: any
   const [message, setMessage] = useState('');
   const [showDialog, setShowDialog] = useState(false);
   const [newAlertaText, setNewAlertaText] = useState('');
-
+  const [alertList, setAlerts] = useState(alerts);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -69,7 +69,7 @@ export default function Step4({ tanqueId, alerts }: { tanqueId: any; alerts: any
     }
   };
 
-  const [alertList, setAlerts] = useState(alerts);
+  
 
   return (
     <Container component="main" maxWidth="xl">
