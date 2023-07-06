@@ -1,27 +1,48 @@
 'use client'
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { Box, Button, FormControl, Container, CssBaseline, InputLabel, Grid, MenuItem, Select, TextField, SelectChangeEvent} from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
 import {Snack} from "../components/snackBar"
 import {accesos, fields, tipos} from "../utils/users_info"
-import {createUser} from "../store/fetch-user"
+import {createUser, getUserById} from "../store/fetch-user"
 import {DataContext} from '../context/context'
 
 
 export default function Step1({data, userId, setActiveStep}: any) {
-  const {createUserFirebase}: any = useContext(DataContext)
+  const {createUserFirebase, user}: any = useContext(DataContext)
+ 
   const [idPadre, setIdPadre] = useState('');
   const router = useRouter();
   const pathname = usePathname()
   const [showSnack, setShowSnack] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
+  const [newAcceso, setNewAcceso] = useState('')
+  const [newTipo, setTipo] = useState('')
+  const [userInfo, setUserInfo] = useState({
+    email:null,
+    cedula: null,
+    nombre: null,
+    celular: null,
+    acceso: null,
+  });
+  
+  useEffect(() => {
+    
+    const fetchData = async () => {
+      const {user} = await getUserById(userId);
+ 
+      setUserInfo(user)
+      setNewAcceso(user.acceso)
+      setTipo(user.tipo)
+    };
+    fetchData();
+  }, []);
+
   const handleChangeSelect = (event: SelectChangeEvent) => {
     setIdPadre(event.target.value as string);
   };
 
-  const [newAcceso, setNewAcceso] = useState('')
-  const [newTipo, setTipo] = useState('')
   const handleEdit =  async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -89,7 +110,7 @@ export default function Step1({data, userId, setActiveStep}: any) {
     }
   }
 
-
+ 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -134,6 +155,8 @@ export default function Step1({data, userId, setActiveStep}: any) {
                       type={value}
                       id={value}
                       autoComplete={value}
+                      InputLabelProps={{ shrink: true }}
+                      defaultValue={userInfo[value as keyof typeof userInfo] || ''}
                     />
                   </Grid>
                 }

@@ -36,6 +36,23 @@ export const getUserByUid = async (uid: any) => {
     }
 };
 
+export const getUserById = async (id: any) => {
+    try {
+        const response = await fetch(`${URL}/users/id/${id}`, {
+            next: { revalidate: 10 } 
+        });
+        if(!response.ok){
+            throw new Error(`Ruquest failed with status ${response.status}`)
+        }
+        const user = await response.json();
+        
+        return user;
+    } catch (error) {
+        console.error(error);
+        return []
+    }
+};
+
 export const createUser = async(date: any) =>{
     try {
         const response = await fetch(`${URL}/users`, {
