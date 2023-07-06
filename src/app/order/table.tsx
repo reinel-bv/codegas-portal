@@ -17,7 +17,7 @@ import Image from "next/image"
 const {espera, noentregado, innactivo, activo, asignado, otro} = colors
 
 const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fechasolicitud, 
-  fechaentrega, forma, kilos, valorunitario, placa, novedades, estado, entregado, imagencerrar, addValues}: any) => {
+  fechaentrega, forma, kilos, valorunitario, placa, novedades, estado, entregado, imagencerrar, addValues, zona}: any) => {
   const [open, setOpen] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [newEstado, setNewEstado] = useState(estado)
@@ -68,6 +68,9 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
             <TableCell align="center" component="th">{_id}</TableCell>
             <TableCell align="center">{codt}</TableCell>
             <TableCell align="center">{razon_social}</TableCell>
+            <TableCell align="center">{direccion}</TableCell>
+            <TableCell align="center">{zona}</TableCell>
+            <TableCell align="center">{fechasolicitud}</TableCell>
             <TableCell align="center">
               {
                 newFechaEntrega 
@@ -85,12 +88,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
                 </Link>
               </Button>
             </TableCell>
-            <TableCell align="center">
-              {novedades &&<Button variant="contained">Si</Button>}
-            </TableCell>
-            <TableCell align="center">
-              {imagencerrar &&<Button variant="contained" onClick={()=>setShowDialog(true)}>Si</Button>}
-            </TableCell>
+           
           </TableRow>
           <TableRow>
             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
@@ -103,26 +101,30 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
                     <Table sx={{ minWidth: 650 }} aria-label="purchases">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="center">F. Solicitud</TableCell>
+                          
                           <TableCell align="center">Solicitud</TableCell>
                           <TableCell align="center">Kilos</TableCell>
                           <TableCell align="center">Valor</TableCell>
                           <TableCell align="center">Cedula</TableCell>
-                          <TableCell align="center">Direccion</TableCell>
                           <TableCell align="center">F Creación</TableCell>
+                          <TableCell align="center">Obervacion</TableCell>
+                          <TableCell align="center">Imagen</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         <TableRow>
-                          <TableCell component="th" scope="row" align="center">
-                            {fechasolicitud}
-                          </TableCell>
+                         
                           <TableCell align="center">{forma}</TableCell>
                           <TableCell align="center">{kilos}</TableCell>
                           <TableCell align="center">{valorunitario}</TableCell>
                           <TableCell align="center">{cedula}</TableCell>
-                          <TableCell align="center">{direccion}</TableCell>
                           <TableCell align="center">{moment(creado).format('YYYY-MM-DD HH:mm')}</TableCell>
+                          <TableCell align="center">
+                            {novedades &&<Button variant="contained">Si</Button>}
+                          </TableCell>
+                          <TableCell align="center">
+                            {imagencerrar &&<Button variant="contained" onClick={()=>setShowDialog(true)}>Si</Button>}
+                          </TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
@@ -185,11 +187,13 @@ export default function RenderTable({tanques}: any) {
               <TableCell align="center">N pedido</TableCell>
               <TableCell align="center">Codt</TableCell>
               <TableCell align="center">Razon Social</TableCell>
+              <TableCell align="center">Direccion</TableCell>
+              <TableCell align="center">Zona</TableCell>
+              <TableCell align="center">F. Solicitud</TableCell>
               <TableCell align="center">F Entrega</TableCell>
               <TableCell align="center">Estado</TableCell>
               <TableCell align="center">Placa</TableCell>
-              <TableCell align="center">Obervacion</TableCell>
-              <TableCell align="center">Imagen</TableCell>
+              
             </TableRow>
           </TableHead>
           <TableBody>

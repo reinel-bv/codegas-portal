@@ -67,4 +67,19 @@ export const createUser = async(date: any) =>{
     }
 }
 
+
+export const editUser = async(date: any) =>{
+    try {
+        const response = await fetch(`${URL}/users/edit`, {
+            method: 'POST', 
+            body: JSON.stringify(date),
+            cache: 'no-store'
+        });
+        const data = await response.json();
+        return data
+    } catch (error){
+        console.error(error)
+    }
+}
+
  

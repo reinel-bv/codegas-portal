@@ -4,7 +4,7 @@ import { Box, Button, FormControl, Container, CssBaseline, InputLabel, Grid, Men
 import { usePathname, useRouter } from 'next/navigation';
 import {Snack} from "../components/snackBar"
 import {accesos, fields, tipos} from "../utils/users_info"
-import {createUser, getUserById} from "../store/fetch-user"
+import {createUser, editUser, getUserById} from "../store/fetch-user"
 import {DataContext} from '../context/context'
 
 
@@ -58,7 +58,9 @@ export default function Step1({data, userId, setActiveStep}: any) {
       valorUnitario: data.get('valorUnitario'),
       acceso: data.get('acceso'),
       idPadre: idPadre,
+      _id: userId
     };
+    editUser(newData)
     setActiveStep();
   }
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
