@@ -3,7 +3,7 @@ import { User, createUserWithEmailAndPassword, signInWithEmailAndPassword, signO
 import { createContext, useEffect, useState } from "react";
 import { getUserByUid } from "../store/fetch-user";
 import { auth } from "../utils/firebase/firebase-config";
-import {SignInProps, DataProps} from "./types"
+import {SignInProps, DataProps, EmailProps} from "./types"
 
 
 const DataContext = createContext<DataProps>({
@@ -85,9 +85,10 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
     },
-    recoverPass: async (email: string) => {
+    recoverPass: async (email: EmailProps) => {
       try {
-        await sendPasswordResetEmail(auth, email);
+        const emailAddress = typeof email === 'string' ? email : email.email;
+        await sendPasswordResetEmail(auth, emailAddress);
       } catch (error) {
         console.error(error);
       }

@@ -57,7 +57,7 @@ const RenderPunto = ({puntos, handleDelete}: any) => (
 );
 
 export default function Step4({ userId, zona, puntos }: { userId: any; zona: any[], puntos: any[] }) {
-  console.log(puntos)
+
   const [showSnack, setShowSnack] = useState(false);
   const [message, setMessage] = useState('');
   const [showDialog, setShowDialog] = useState(false);

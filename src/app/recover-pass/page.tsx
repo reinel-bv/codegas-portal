@@ -17,14 +17,14 @@ export default function SignIn() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-  
+    const email = data.get('email');
    
-    handleRecoverPass( data.get('email'))
+    handleRecoverPass(email)
   };
 
   const handleRecoverPass = async (email: any) =>{
     try {
-       await recoverPass(email)
+      await recoverPass(email)
       setShowSnack(true)
       setMessage("Hemos enviado un link de recuperación")
     } catch (error) {

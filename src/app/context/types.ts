@@ -4,7 +4,7 @@ export interface SignInProps {
   password: string
 }
 
-interface EmailProps {
+export interface EmailProps {
   email: string,
 }
 

@@ -20,10 +20,9 @@ const RenderZonas = ({zona, updateValor, addValues}: any) => {
             onChange={(e)=>addValues(idcliente, valorunitario, _id, e)}
             inputProps={{ 'aria-label': 'controlled' }}
           />
-          {_id}
         </TableCell>
-        <TableCell align="center" component="th">{nombrezona}</TableCell>
-        <TableCell align="center" component="th">{direccion}</TableCell>
+        <TableCell align="center">{nombrezona}</TableCell>
+        <TableCell align="center">{direccion}</TableCell>
         <TableCell align="center">{codt}</TableCell>
         <TableCell align="center">{razon_social}</TableCell>
         <TableCell align="center">{nombre}</TableCell>

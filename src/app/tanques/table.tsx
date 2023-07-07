@@ -5,12 +5,10 @@ import IconButton from '@mui/material/IconButton';
 import {KeyboardArrowDown, KeyboardArrowUp} from '@mui/icons-material';
  
 import { PaginationTable } from "../components/pagination/pagination";
- 
-
-
-const RenderTanques = ({_id, codigoactivo, capacidad, fabricante, registroonac, fechaUltimaRev: fechaMto, nplaca: placaMan, serie, anofabricacion, existeTanque: ubicacion, ultimrevtotal, propiedad, direccion, razon_social, codt, data, total}: any) => {
+import {Detail} from "./detail"
+const RenderTanques = ({_id, codigoactivo, capacidad, fabricante, registroonac, fechaUltimaRev: fechaMto, nplaca: placaMan, serie, anofabricacion, existeTanque: ubicacion, ultimrevtotal, propiedad, direccion, razon_social, codt, data, handleDialog}: any) => {
   const [open, setOpen] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
+
   return (
     <Fragment> 
       <TableRow
@@ -25,6 +23,7 @@ const RenderTanques = ({_id, codigoactivo, capacidad, fabricante, registroonac, 
           {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
+        <TableCell align="center">{_id}</TableCell>
         <TableCell align="center">{codigoactivo}</TableCell>
         <TableCell align="center">{capacidad}</TableCell>
         <TableCell align="center">{fabricante}</TableCell>
@@ -35,11 +34,11 @@ const RenderTanques = ({_id, codigoactivo, capacidad, fabricante, registroonac, 
           {
             data.length===0
             ?<Button variant="contained">No</Button>
-            :<Button variant="contained" onClick={()=>setShowDialog(true)} color='error'>{data.length} Alertas</Button>
+            :<Button variant="contained" onClick={()=>handleDialog(_id)} color='error'>{data.length} Alertas</Button>
           }
         </TableCell>
         <TableCell align="center">
-          <Button variant="contained" onClick={()=>setShowDialog(true)}>Si</Button>
+          <Button variant="contained" onClick={()=>handleDialog(_id)}>Ver</Button>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -86,11 +85,19 @@ const RenderTanques = ({_id, codigoactivo, capacidad, fabricante, registroonac, 
 }
 
 export default function RenderTable({tanques}: any) {
+  const [showDialog, setShowDialog] = useState(false);
+  const [tanque, setTanque] = useState({});
+  const handleDialog = (id: any) => {
+    setShowDialog(true)
+    const filterTanque = tanques.filter(({_id}: any) => {return id===_id})
+    setTanque(filterTanque[0])
+  }
   return(
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell align="center">&nbsp;</TableCell>
               <TableCell align="center">&nbsp;</TableCell>
               <TableCell align="center">Codigo Act.</TableCell>
               <TableCell align="center">Capacidad</TableCell>
@@ -104,12 +111,13 @@ export default function RenderTable({tanques}: any) {
           </TableHead>
           <TableBody>
           {
-            tanques.map((e: any, key: string)=> (<RenderTanques {...e} key={key} /> ))
+            tanques.map((e: any, key: string)=> (<RenderTanques {...e} key={key} handleDialog={handleDialog} /> ))
           }
           
         </TableBody>
       </Table>
       <PaginationTable total={tanques[0]?.total ?? 0} />
+      <Detail showDialog={showDialog} setShowDialog={setShowDialog} tanque={tanque} />
     </TableContainer>
   )
 }
