@@ -1,53 +1,32 @@
 'use client'
-import React, { useContext, useEffect } from 'react';
-import { CssBaseline, Box, TextField, FormControlLabel, Typography, Avatar, Checkbox, Button, Grid, Container } from '@mui/material';
+import React, { useContext, useState } from 'react';
+import { CssBaseline, Box, TextField, Typography, Avatar, Button, Container, Grid } from '@mui/material';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { redirect } from 'next/navigation';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {DataContext} from "./context/context"
 import Link from 'next/link';
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://codegascolombia.com/">
-        Codegas colombia
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-// TODO remove, this demo shouldn't need to reset the theme.
+import {Snack} from "../components/snackBar"
+import {DataContext} from "../context/context"
+ 
 const defaultTheme = createTheme();
-
-
-
 export default function SignIn() {
-  const {user, login}: any = useContext(DataContext)
-  
-  useEffect(()=>{
-    if(user?.email) redirect('/zonas')
-  }, [user])
+  const {recoverPass}: any = useContext(DataContext)
+  const [showSnack, setShowSnack] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
   
-    const dataUser ={
-      email: data.get('email'),
-      password: data.get('password'),
-    };
-    signIn(dataUser)
+   
+    handleRecoverPass( data.get('email'))
   };
 
-  const signIn = async (dataUser: any) =>{
+  const handleRecoverPass = async (email: any) =>{
     try {
-      const response = await  login(dataUser)
-      redirect('/zonas')
+       await recoverPass(email)
+      setShowSnack(true)
+      setMessage("Hemos enviado un link de recuperación")
     } catch (error) {
       console.log(error)
     }
@@ -69,7 +48,7 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Recuperar Contraseña
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -82,39 +61,26 @@ export default function SignIn() {
               autoComplete="email"
               autoFocus
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+              
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Recuperar Contraseña
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/recover-pass">
-                    Recordar contraseña?
+                <Link href="/">
+                   Regresar
                 </Link>
               </Grid>
               
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+        <Snack show={showSnack} setShow={()=>setShowSnack(false)} message={message} />
       </Container>
     </ThemeProvider>
   );

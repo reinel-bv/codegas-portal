@@ -25,6 +25,7 @@ import AlertConfirm from '../components/alertConfirm/alertConfirm';
 import { addPuntoUser, DeletePunto } from '../store/fetch-punto';
 
 const RenderPunto = ({puntos, handleDelete}: any) => (
+  
   <TableContainer>
     <Table>
       <TableHead>
@@ -56,6 +57,7 @@ const RenderPunto = ({puntos, handleDelete}: any) => (
 );
 
 export default function Step4({ userId, zona, puntos }: { userId: any; zona: any[], puntos: any[] }) {
+  console.log(puntos)
   const [showSnack, setShowSnack] = useState(false);
   const [message, setMessage] = useState('');
   const [showDialog, setShowDialog] = useState(false);

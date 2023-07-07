@@ -6,10 +6,11 @@ import {Snack} from "../components/snackBar"
 import {accesos, fields, tipos} from "../utils/users_info"
 import {createUser, editUser, getUserById} from "../store/fetch-user"
 import {DataContext} from '../context/context'
+import { generate } from '@wcj/generate-password';
 
-
+const GENERATE_PASS = generate()
 export default function Step1({data, userId, setActiveStep}: any) {
-  const {createUserFirebase, user}: any = useContext(DataContext)
+  const {createUserFirebase}: any = useContext(DataContext)
  
   const [idPadre, setIdPadre] = useState('');
   const router = useRouter();
@@ -28,7 +29,6 @@ export default function Step1({data, userId, setActiveStep}: any) {
   });
   
   useEffect(() => {
-    
     const fetchData = async () => {
       const {user} = await getUserById(userId);
  
@@ -36,7 +36,7 @@ export default function Step1({data, userId, setActiveStep}: any) {
       setNewAcceso(user.acceso)
       setTipo(user.tipo)
     };
-    fetchData();
+    userId &&fetchData();
   }, []);
 
   const handleChangeSelect = (event: SelectChangeEvent) => {
@@ -68,7 +68,7 @@ export default function Step1({data, userId, setActiveStep}: any) {
     const data = new FormData(event.currentTarget);
     
     try {
-      const response = await createUserFirebase(data.get('email'));
+      const response = await createUserFirebase(data.get('email'), GENERATE_PASS);
       if (typeof response === 'string') {
         setSeverity("error")
         setShowSnack(true)
@@ -87,7 +87,8 @@ export default function Step1({data, userId, setActiveStep}: any) {
           valorUnitario: data.get('valorUnitario'),
           acceso: data.get('acceso'),
           idPadre: idPadre,
-          uid: response.uid
+          uid: response.uid,
+          pass: GENERATE_PASS
         };
         saveData(newData);
       }
@@ -109,6 +110,10 @@ export default function Step1({data, userId, setActiveStep}: any) {
       setMessage("Usuario Guardado con exito")
       setSeverity("success")
       router.push(`${pathname}?userId=${code}`, undefined)
+      setTimeout(() => {
+        setActiveStep();
+      }, 1000);
+      
     }
   }
 
@@ -158,7 +163,7 @@ export default function Step1({data, userId, setActiveStep}: any) {
                       id={value}
                       autoComplete={value}
                       InputLabelProps={{ shrink: true }}
-                      defaultValue={userInfo[value as keyof typeof userInfo] || ''}
+                      defaultValue={userInfo?.email ?userInfo[value as keyof typeof userInfo] || '' :""}
                     />
                   </Grid>
                 }

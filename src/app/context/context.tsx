@@ -1,16 +1,17 @@
 'use client'
-import { User, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { User, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { getUserByUid } from "../store/fetch-user";
 import { auth } from "../utils/firebase/firebase-config";
 import {SignInProps, DataProps} from "./types"
- 
+
 
 const DataContext = createContext<DataProps>({
   idUser: null,
   acceso: null,
   user: null,
   login: async () => {},
+  recoverPass: async () => {},
   closeSesion: async () => {},
   createUserFirebase: async () => {
     throw new Error("createUserFirebase is not implemented");
@@ -72,9 +73,9 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
         console.error(error);
       }
     },
-    createUserFirebase: async (email: string) => {
+    createUserFirebase: async (email: string, pass: string) => {
       try {
-        const { user } = await createUserWithEmailAndPassword(auth, email, "aef*/aef");
+        const { user } = await createUserWithEmailAndPassword(auth, email, pass);
         return user;
       } catch (error) {
         if (error instanceof Error) {
@@ -82,6 +83,13 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
         } else {
           return "unknown error";
         }
+      }
+    },
+    recoverPass: async (email: string) => {
+      try {
+        await sendPasswordResetEmail(auth, email);
+      } catch (error) {
+        console.error(error);
       }
     }
   };

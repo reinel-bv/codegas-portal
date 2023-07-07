@@ -14,7 +14,7 @@ export const RenderUsers = async function RenderUsers({
 }: RenderUsersProps) {
   const user = await getUsers(page, limit, access, search);
   const zona = await fetchZonas();
-  let puntos = {puntos: null}
+  let puntos = {puntos: []}
   if(userId){
     puntos = await getPuntos(userId);
   }

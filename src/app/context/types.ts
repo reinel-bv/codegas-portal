@@ -4,11 +4,16 @@ export interface SignInProps {
   password: string
 }
 
+interface EmailProps {
+  email: string,
+}
+
 export interface DataProps {
   idUser: string | null;
   acceso: string | null;
   user: User | null;
   login: (credentials: SignInProps) => Promise<void>;
   closeSesion: () => Promise<void>;
-  createUserFirebase: (email: string) => Promise<User | string>;
+  createUserFirebase: (email: string, pass: string) => Promise<User | string>;
+  recoverPass: (email: EmailProps) => Promise<void>;
 }
