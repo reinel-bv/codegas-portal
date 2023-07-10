@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Container,
-  FormControl,
-  Grid,
-  IconButton,
+  Grid,  
 } from '@mui/material';
 import Image from 'next/image'
 import { AlertDialog } from '../components/alertDialog/alertDialog';
-import DeleteIcon from '@mui/icons-material/Delete';
- 
+import ModalImage from "react-modal-image";
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+
 const RenderInfo = ({text, data}: any) => {
   return (
     <>
-      <p>{text}</p>
+      <h3>{text}</h3>
       {
       data.map((image: any, index: any) => (
         <Box key={index} sx={{ display: 'inline-block', marginRight: '10px' }}>
@@ -27,20 +28,21 @@ const RenderInfo = ({text, data}: any) => {
               marginBottom: '0px',
             }}
           >
-            <Image 
+            {/* <Image 
               src={image} 
               alt={`Image ${index}`} 
               width={150}
               height={155}
               placeholder="blur"
               blurDataURL={image}
+            /> */}
+             <ModalImage
+              small={image}
+              large={image}
+              style={{height:100}}
+              alt={`Image ${index}`} 
             />
-            <IconButton
-              sx={{ position: 'absolute', top: '5px', right: '5px', backgroundColor: '#fff' }}
-              onClick={() => console.log(index)}
-            >
-              <DeleteIcon />
-            </IconButton>
+            
           </Box>
         </Box>
       ))
@@ -49,14 +51,32 @@ const RenderInfo = ({text, data}: any) => {
   )
 }
 
+function RenderAlert({data}: any) {
+  return (
+    <>
+      {
+        data.map(({texto}:any, index: any)=> {
+          return <ListItem key={index} component="div" disablePadding>
+            <ListItemButton>
+              <ListItemText primary={texto} />
+            </ListItemButton>
+          </ListItem>
+        })
+      }
+    </>
+  );
+}
+
 export function Detail({ showDialog, tanque, setShowDialog }: { showDialog: any; tanque: any, setShowDialog: any }) {
-  const {placa, placamantenimiento, placafabricante, dossier, cerfabricante, ceronac, visual} = tanque
-  console.log(placa)
+  const {placa, placamantenimiento, placafabricante, dossier, cerfabricante, ceronac, visual, data=[]} = tanque
+
   return (
     <Container component="main" maxWidth="xl">
       <AlertDialog showDialog={showDialog} setShowDialog={() => setShowDialog(false)}>
         <Box>
-          <Grid container spacing={2}>
+        {
+          data.length==0
+          ?<Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
               {
                 placa &&placa.length>0
@@ -81,12 +101,13 @@ export function Detail({ showDialog, tanque, setShowDialog }: { showDialog: any;
                 &&<RenderInfo data={visual} text="Visual" />
               }   
             </Grid>
-           
-            
           </Grid>
+          :<RenderAlert data={data} />          
+        }
+          
         </Box>
       </AlertDialog>
-   
+     
     </Container>
   );
 }
