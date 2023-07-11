@@ -1,13 +1,21 @@
 'use client';
-import react, { ReactElement, useContext, useState } from 'react';
-import { Container, Grid, Box, Paper} from '@mui/material';
+import react, { ReactElement, useContext, useEffect } from 'react';
+import { Container, Grid, Box} from '@mui/material';
 import { redirect } from 'next/navigation';
-
+import { usePathname, useRouter } from 'next/navigation';
 import {DataContext} from "../context/context"
 
  
 const LoyoutRevisiones = ({children}: {children: React.ReactNode}): ReactElement => {
-  const {user, login}: any = useContext(DataContext)
+  const {user, idUser, acceso, login}: any = useContext(DataContext)
+  const router = useRouter();
+  const pathname = usePathname();
+  useEffect(()=>{
+ 
+      router.push(`${pathname}?page=0&idUser=${idUser}&acceso=${acceso}`);
+    
+  }, [idUser])
+  
   if(!user) redirect('/')
   return(
     <Box

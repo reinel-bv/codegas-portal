@@ -4,16 +4,26 @@ import React, { useState } from 'react';
 import {Paper, InputBase} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 
 export default function InputSearch({search}: any) {
   const [url, setUrl] = useState(1);
   const router = useRouter();
   const pathname = usePathname();
-
+  const searchParams = useSearchParams();
+  const idUser = searchParams.get('idUser');
+  const acceso = searchParams.get('acceso');
   const handleChangeUrl = (newUrl: any) => {
-    router.push(`${pathname}?page=1&search=${newUrl}`, undefined)
+    newUrl = newUrl==="" ? undefined :newUrl
+    if(pathname==="/order"){
+      router.push(`${pathname}?page=1&search=${newUrl}&idUser=${idUser}&acceso=${acceso}`, undefined)
+    } else {
+      router.push(`${pathname}?page=1&search=${newUrl}`, undefined)
+    }
+
+    
+    
   }
 
   const handleKeyPress = (event: any) => {

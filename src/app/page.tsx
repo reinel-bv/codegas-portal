@@ -30,7 +30,7 @@ export default function SignIn() {
   const {user, login}: any = useContext(DataContext)
   
   useEffect(()=>{
-    if(user?.email) redirect('/revisiones')
+    if(user?.email) redirect('/order')
   }, [user])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

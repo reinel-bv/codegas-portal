@@ -1,21 +1,11 @@
 'use client';
 import React, { ReactElement, useState } from 'react';
-import { MenuItem, Select, Button, Grid, Paper, InputBase, FormControlLabel, Checkbox } from '@mui/material';
+import { MenuItem, Select, Button, Grid, InputBase, FormControlLabel, Checkbox } from '@mui/material';
 
 import { InputZonaProps } from "./input_zona_props";
+import PaperContent from "../paperContent/paper_content";
 
-const PaperContent = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <Grid item xs={12} sm={2}>
-      <Paper
-        component="form"
-        sx={{ p: '8px 4px', display: 'flex', alignItems: 'center', marginTop: 2, marginLeft: 2 }}
-      >
-        {children}
-      </Paper>
-    </Grid>
-  )
-}
+ 
 
 const InputZones = ({ onSend }: { onSend: (data: InputZonaProps) => void }): ReactElement => {
   const [data, setData] = useState<InputZonaProps>({ typeValue: 'porcentaje', replace: 0, valor: 0, allUsers: false });

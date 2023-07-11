@@ -1,9 +1,11 @@
 'use client' 
 import { Fragment, useState, useEffect } from 'react';
-import { TableRow, TableCell, Box, Collapse, Button, Checkbox, Paper, Table, TableBody, TableContainer, TableHead, Typography } from '@mui/material';
+import { TableRow, TableCell, Box, Collapse, Button, Checkbox, Table, TableBody, TableContainer, TableHead, Typography, Grid, Paper } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import moment from "moment"
+import dayjs from 'dayjs';
 import {KeyboardArrowDown, KeyboardArrowUp} from '@mui/icons-material';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {SelectState} from "../components/selecState"
 import {colors} from "../utils/colors"
@@ -16,32 +18,16 @@ import Image from "next/image"
 
 const {espera, noentregado, innactivo, activo, asignado, otro} = colors
 
-const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fechasolicitud, 
-  fechaentrega, forma, kilos, valorunitario, placa, novedades, estado, entregado, imagencerrar, addValues, zona}: any) => {
+
+
+
+const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fechasolicitud, isCheked,
+  fechaentrega, forma, kilos, valorunitario, placa, novedades, estado, entregado, imagencerrar, addValues, zona, updateDate, updateStatus}: any) => {
+  
   const [open, setOpen] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  const [newEstado, setNewEstado] = useState(estado)
-  const [showSnack, setShowSnack] = useState(false);
-  const [message, setMessage] = useState("");
-  const [newFechaEntrega, setFechaEntrega] = useState(fechaentrega)
-  const background=newEstado=="espera" ?espera :newEstado=="noentregado" ?noentregado :newEstado=="innactivo" ?innactivo :newEstado=="activo" &&!placa && !entregado ?activo :newEstado=="activo" && !entregado ?asignado :otro
-  const updateDate = async (id: any, date: any) => {
-    const {status} = await UpdateDatePedido(id, date)
-    if (status) {
-      setShowSnack(true)
-      setMessage("Fecha Actualizada")
-      setFechaEntrega(date)
-    }
-  }
+  const background=estado=="espera" ?espera :estado=="noentregado" ?noentregado :estado=="innactivo" ?innactivo :estado=="activo" &&!placa && !entregado ?activo :estado=="activo" && !entregado ?asignado :otro
 
-  const updateStatus = async (id: any, state: any) => {
-    const {status} = await UpdateStatePedido(id, state)
-    if (status) {
-      setShowSnack(true)
-      setMessage(`estado ${state} cambiado!`)
-      setNewEstado(state)
-    }
-  }
   return (
     <Fragment> 
       <TableRow
@@ -52,7 +38,8 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
           >
             <TableCell align="center">
               <Checkbox
-                onChange={()=>addValues(_id, fechaentrega)}
+                checked={isCheked  ?isCheked :false}
+                onChange={(e)=>addValues(_id, e)}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             </TableCell>
@@ -72,18 +59,17 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
             <TableCell align="center">{zona}</TableCell>
             <TableCell align="center">{fechasolicitud}</TableCell>
             <TableCell align="center">
-              {
-                newFechaEntrega 
-                ?moment(newFechaEntrega).format('YYYY-MM-DD')
-                :<Date setValueDate={(e: any) =>{ updateDate(_id, e), setFechaEntrega(e)}} />
-              }
+              
+                 
+                 <Date setValueDate={(e: any) =>updateDate(e, _id)} value={fechaentrega} />
+               
             </TableCell>
             <TableCell align="center">
-              <SelectState newEstado={newEstado} setNewEstado={(e: any)=>{setNewEstado(e), updateStatus(_id, e)}} />
+              <SelectState newEstado={estado} setNewEstado={(e: any)=>updateStatus(e, _id)} />
             </TableCell>
             <TableCell align="center">
               <Button variant="contained">
-                <Link href={`order/${_id}/${moment(newFechaEntrega).format('YYYY-MM-DD')}`} style={{color: "#ffffff", textDecoration: 'none'}}>
+                <Link href={`order/${_id}/${moment(fechaentrega).format('YYYY-MM-DD')}`} style={{color: "#ffffff", textDecoration: 'none'}}>
                   {placa ?placa :"Sin Placa"}
                 </Link>
               </Button>
@@ -133,7 +119,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
               </Collapse>
             </TableCell>
           </TableRow>
-          <Snack show={showSnack} setShow={()=>setShowSnack(false)} message={message} />
+         
           
           <AlertDialog showDialog={showDialog} setShowDialog={()=>setShowDialog(false)}>
             {imagencerrar &&<Image src={imagencerrar} alt="codegas colombia" width={200} height={500}/> }
@@ -142,47 +128,158 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
   )
 }
 
-export default function RenderTable({tanques}: any) {
-  const [valorWithArray, setValorWithArray] = useState<{ id: any; newFechaEntrega: any }[]>([]);
+export default function RenderTable({orders}: any) {
+  const [valorWithArray, setValorWithArray] = useState<{ _id: any }[]>([]);
   const [newValorWithArray, setNewValorWithArray] = useState<string | undefined>();
+  const [isCheked, setIsCheked] = useState(false);
+  const [newOrder, setNewOrder] = useState(orders)
+  const [showSnack, setShowSnack] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const addValues = (id: any, newFechaEntrega: any) => {
-    const index = valorWithArray.some(({ id: _id }) => _id === id);
-    if (!index) {
-      setValorWithArray((state) => [...state, { id, newFechaEntrega }]);
-    } else {
-      setValorWithArray(valorWithArray.filter(({ id: _id }) => _id !== id));
-    }
-  };
+  const router = useRouter();
+  const pathname = usePathname()
+  const searchParams = useSearchParams();
+  const page = searchParams.get('page');
+  const newValue = searchParams.get('newValue');
+  const idUser = searchParams.get('idUser');
+  const acceso = searchParams.get('acceso');
+  let search = searchParams.get('search');
+  search = search || 'undefined'
+
+
   useEffect(()=> {
     let data = ''
     for(let i=0; i<valorWithArray.length; i ++){
-      data += valorWithArray[i].id
+      data += valorWithArray[i]._id
       data += ','
     }
     setNewValorWithArray(data)
   }, [valorWithArray])
 
+  useEffect(() => {
+    setNewOrder(orders)
+  }, [orders, newValue])
+
+
+  const addValues = (id: any, event: any) => {
+    const index = valorWithArray.some(({ _id }) => _id === id);
+    if (!index) {
+      setValorWithArray((state) => [...state,{ _id: id}]);
+    } else {
+      setValorWithArray(valorWithArray.filter(({ _id }) => _id !== id));
+    }
+
+    const updateOrder = newOrder.map((e: { _id: any; }) => {
+      if (e._id === id) {
+        return { ...e, isCheked: event.target.checked };
+      }
+      return e;
+    });
+  
+    setNewOrder(updateOrder);
+ 
+  };
+
+  const addValuesAll = async (event: any) => {
+    const data = newOrder.map((e: any)=>{
+      return{
+        ...e,
+        _id: e._id,
+        isCheked: event.target.checked
+      }
+    })
+    
+    if(event.target.checked) {setValorWithArray(data), setIsCheked(true)}
+    if(!event.target.checked) {setValorWithArray([]), setIsCheked(false)}
+    setNewOrder(data)
+  }
+  const updateDate = async (date: any, id?: any) => {
+    let dataToSend = valorWithArray.map((e: { _id: any; }) => {
+      return {
+        ...e,
+        fechaentrega: dayjs(date).format('YYYY-MM-DD'),
+      }
+    })
+ 
+
+    if(id){
+      dataToSend = [{_id:id, fechaentrega: dayjs(date).format('YYYY-MM-DD')}] 
+    } else {
+      dataToSend = dataToSend
+      setIsCheked(false)
+      setValorWithArray([])
+      
+    }
+    
+    const {status} = await UpdateDatePedido(dataToSend)
+    if (status) {
+      setShowSnack(true)
+      setMessage("Fecha Actualizada")
+      router.push(`${pathname}?page=${page}&search=${search}&idUser=${idUser}&acceso=${acceso}&newValue=${id+dayjs(date).format('YYYY-MM-DD')}`, undefined)
+    }
+  }
+  const updateStatus = async (state: any, id?: any) => {
+    let data = valorWithArray.map((e: { _id: any; }) => {
+      return {
+        ...e,
+        estado: state,
+      }
+    })
+
+    if(id){
+      data =  [{_id:id, estado: state}] 
+     
+    } else {
+      data = data
+      setIsCheked(false)
+      setValorWithArray([])
+    }
+   
+    const {status} = await UpdateStatePedido(data)
+    if (status) {
+      setShowSnack(true)
+      setMessage(`estado ${state} cambiado!`)
+      router.push(`${pathname}?page=${page}&search=${search}&idUser=${idUser}&acceso=${acceso}&newValue=${id+state}`, undefined)
+    }
+  }
+
+  
   return(
     <TableContainer component={Paper}>
       {
-        newValorWithArray
-        &&<Button variant="contained"  sx={{ marginTop: 1, marginLeft: 1 }}>
-          <Link 
-            href={`order/${newValorWithArray}/${moment().format('YYYY-MM-DD')}`} 
-            style={{
-              color: "#ffffff", 
-              textDecoration: 'none'
-            }}
-          >
-            Vehiculos
-          </Link>
-        </Button>
+        valorWithArray.length>0
+        &&<Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} sm={1}>
+              <Button variant="contained" sx={{ marginTop: 1, marginLeft: 1, padding: 2, width: "100%" }}>
+                <Link 
+                  href={`order/${newValorWithArray}/${moment().format('YYYY-MM-DD')}`} 
+                  style={{
+                    color: "#ffffff", 
+                    textDecoration: 'none'
+                  }}
+                >
+                  Vehiculos
+                </Link>
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={2}>
+              <Date setValueDate={updateDate} />
+            </Grid>
+            <Grid item xs={12} sm={2}  sx={{ marginTop: 1 }} >
+              <SelectState setNewEstado={updateStatus}/>
+            </Grid>
+          </Grid>
       }
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
           <TableRow>
-              <TableCell align="center">&nbsp;</TableCell>
+              <TableCell align="center">
+                <Checkbox
+                  checked={isCheked}
+                  onChange={addValuesAll}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+              </TableCell>
               <TableCell align="center">&nbsp;</TableCell>
               <TableCell align="center">N pedido</TableCell>
               <TableCell align="center">Codt</TableCell>
@@ -198,12 +295,20 @@ export default function RenderTable({tanques}: any) {
           </TableHead>
           <TableBody>
           {
-            tanques.map((e: any, key: string)=> (<RenderTanques {...e} key={key} addValues={addValues} /> ))
+            newOrder.map((e: any, key: string)=> (
+              <RenderTanques {...e} 
+                key={key} 
+                addValues={addValues} 
+                updateDate={updateDate}
+                updateStatus={updateStatus}
+              /> 
+            ))
           }
           
         </TableBody>
       </Table>
-      <PaginationTable total={tanques[0]?.total ?? 0} />
+      <PaginationTable total={newOrder[0]?.total ?? 0} />
+      <Snack show={showSnack} setShow={()=>setShowSnack(false)} message={message} />
     </TableContainer>
   )
 }
