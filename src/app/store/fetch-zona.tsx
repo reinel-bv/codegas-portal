@@ -48,7 +48,7 @@ export const ChangeValorUnitarioAll = async(valorUnitario: any, type: any) =>{
         type
     }
     try {
-        const response = await fetch(`${URL}/users/cambiarValorTodos/`, {
+        const response = await fetch(`${URL}/users/cambiarValorTodos`, {
             method: 'PUT', 
             body: JSON.stringify(newData),
             cache: 'no-store'
@@ -64,8 +64,9 @@ export const ChangeValorUnitarioSelected = async(data: any) =>{
     const newData = {
         seleccionados: data
     }
+   
     try {
-        const response = await fetch(`${URL}/users/cambiarValorSelected/`, {
+        const response = await fetch(`${URL}/users/cambiarValorSelected`, {
             method: 'PUT', 
             body: JSON.stringify(newData),
             cache: 'no-store'

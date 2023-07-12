@@ -33,7 +33,7 @@ const RenderZonas = ({zona, updateValor, addValues}: any) => {
             id={_id.toString()}
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             label="Amount"
-            value={valorunitario}
+            defaultValue={valorunitario}
             onKeyPress={(e)=>{updateValor(e, idcliente, nombre)}}
           />
           </FormControl>
@@ -65,6 +65,8 @@ export default function RenderTable({zona}: any) {
   useEffect(() => {
     const {valor: value, replace, typeValue: type, allUsers}: any = newValorUnitario
     const typeValue = replace==0 ?value :replace
+    const typeParams = replace==0 ?type :'replace'
+ 
     const data = valorWithArray.map(({_id, valorunitario}: any)=>{
       const newValue = type==="porcentaje" || type==undefined ? valorunitario +((valorunitario*Number(value))/100) : valorunitario+Number(value)
       const valorUnitario = replace==0 ?Math.round(parseFloat(newValue)) :Number(replace)
@@ -74,11 +76,11 @@ export default function RenderTable({zona}: any) {
       }
     })
    
-    if( value || replace|| type) saveData(data, allUsers, type, typeValue)
+    if( value || replace|| type) saveData(data, allUsers, typeParams, typeValue)
   }, [newValorUnitario])
 
   const saveData = async (data: any, allUsers: boolean, type: string, replaceParams: any) => {
-    let status;
+    let status = false;
     if(allUsers) {
       const response =  await ChangeValorUnitarioAll(replaceParams, type)
       status= response.status
