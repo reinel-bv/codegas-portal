@@ -9,6 +9,7 @@ import {SignInProps, DataProps, EmailProps} from "./types"
 const DataContext = createContext<DataProps>({
   idUser: null,
   acceso: null,
+  nombre: null,
   user: null,
   login: async () => {},
   recoverPass: async () => {},
@@ -21,6 +22,7 @@ const DataContext = createContext<DataProps>({
 const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [userData, setUser] = useState<User | null>(null);
   const [idUser, setIdUser] = useState<string | null>(null);
+  const [nombre, setNombre] = useState<string | null>(null);
   const [acceso, setAcceso] = useState<string | null>(null);
 
   const listenAuth = (user: User | null) => {
@@ -28,6 +30,7 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : user);
       setIdUser(localStorage.getItem("idUser") ? JSON.parse(localStorage.getItem("idUser")!) : idUser);
       setAcceso(localStorage.getItem("acceso") ? localStorage.getItem("acceso")! : acceso);
+      setNombre(localStorage.getItem("nombre") ? localStorage.getItem("nombre")! : nombre);
     } else {
       setUser(user);
     }
@@ -39,23 +42,28 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
       subscriber(); // unsubscribe on unmount
     };
   }, []);
-
+  console.log(nombre)
   const data: DataProps = {
     idUser: idUser ? idUser : typeof window !== "undefined" ? localStorage.getItem("idUser") : null,
     acceso: acceso ? acceso : typeof window !== "undefined" ? localStorage.getItem("acceso") : null,
+    nombre: nombre ? nombre : typeof window !== "undefined" ? localStorage.getItem("nombre") : null,
     user: userData,
     login: async ({ email, password }: SignInProps) => {
       try {
         const { user } = await signInWithEmailAndPassword(auth, email, password);
-        const { _id, acceso } = await getUserByUid(user.uid);
-    
+        const { _id, acceso, nombre } = await getUserByUid(user.uid);
+        
+        console.log(_id)
+        console.log(nombre)
         if (typeof window !== "undefined") {
           localStorage.setItem("user", JSON.stringify(user));
           localStorage.setItem("idUser", JSON.stringify(_id));
           localStorage.setItem("acceso", acceso);
+          localStorage.setItem("nombre", nombre);
         }
       
         setUser(user);
+        setNombre(nombre);
         setIdUser(_id);
         setAcceso(acceso);
       } catch (error) {

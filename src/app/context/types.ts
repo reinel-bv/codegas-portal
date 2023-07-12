@@ -11,6 +11,7 @@ export interface EmailProps {
 export interface DataProps {
   idUser: string | null;
   acceso: string | null;
+  nombre: string | null;
   user: User | null;
   login: (credentials: SignInProps) => Promise<void>;
   closeSesion: () => Promise<void>;

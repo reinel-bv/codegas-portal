@@ -77,7 +77,7 @@ export default function CrearPedido({user, puntos}: any) {
       setMessage("Pedido Guardado con exito")
     }
   }
-  console.log(user)
+
  
   return (
     <Container component="main" maxWidth="xs">

@@ -66,8 +66,8 @@ export default function Nav({children}: {children: React.ReactNode}) {
   const {user, closeSesion}: any = useContext(DataContext)
   const LogOut = async () =>{
     try {
-      redirect('/')
       const response = await closeSesion()
+      redirect('/')
       console.log(response)
     } catch (error) {
       console.log(error)
