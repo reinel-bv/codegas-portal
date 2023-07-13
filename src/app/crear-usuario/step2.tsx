@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import {Add, Delete} from '@mui/icons-material';
 import { Snack } from '../components/snackBar';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import { AlertDialog } from '../components/alertDialog/alertDialog';
 import AlertConfirm from '../components/alertConfirm/alertConfirm';
 import { addPuntoUser, DeletePunto } from '../store/fetch-punto';
@@ -34,16 +35,20 @@ const RenderPunto = ({puntos, handleDelete}: any) => (
           <TableCell>Zona</TableCell>
           <TableCell>Capacidad</TableCell>
           <TableCell>Observacion</TableCell>
+          <TableCell>Latitud</TableCell>
+          <TableCell>Longitud</TableCell>
           <TableCell></TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {puntos.map(({ _id, direccion, nombrezona, capacidad, observacion }: any) => (
+        {puntos.map(({ _id, direccion, nombrezona, capacidad, observacion, coordenadas, lat, lng }: any) => (
           <TableRow key={_id}>
             <TableCell>{direccion}</TableCell>
             <TableCell>{nombrezona}</TableCell>
             <TableCell>{capacidad}</TableCell>
             <TableCell>{observacion}</TableCell>
+            <TableCell>{lat ?lat :coordenadas.x}</TableCell>
+            <TableCell>{lng ?lng :coordenadas.y}</TableCell>
             <TableCell> 
               <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(_id, direccion)}>
                 <Delete />
@@ -64,6 +69,8 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
   const [openConfirm, setOpenConfirm] = useState(false);
   const [puntosList, setPuntosList] = useState(puntos);
   const [userSelected, setUserSelected] = useState({direccion: '', id: ''});
+ 
+  const [value, setValue] = useState(null);
 
   const [selectedZona, setSelectedZona] = useState('');
   const handleZonaChange = (id: any) => {
@@ -79,6 +86,7 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
       capacidad: data.get('capacidad'),
       observacion: data.get('observacion'),
       idZona: data.get('idZona'),
+      location: data.get('lat')+', '+ data.get('lng'), 
       idCliente: userId,
     };
     await saveData(newData);
@@ -90,8 +98,8 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
       setShowSnack(true);
       setMessage('Ubicación Guardada con éxito');
       setShowDialog(false);
-
-      const updatedPunto = [...puntosList, { direccion: data.direccion, nombrezona: selectedZona, capacidad: data.capacidad, observacion: data.observacion }];
+      const [lat, lng] = data.location.split(", ");
+      const updatedPunto = [...puntosList, { direccion: data.direccion, nombrezona: selectedZona, capacidad: data.capacidad, observacion: data.observacion, lat, lng }];
       setPuntosList(updatedPunto);
     }
   };
@@ -110,12 +118,19 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
       setShowSnack(true)
       setMessage("Eliminado!")
     }
-
-
   }
+
+
   return (
     <Container component="main" maxWidth="xl">
       <CssBaseline />
+      {/* <GooglePlacesAutocomplete
+        apiKey='AIzaSyBOmtw-FIJBd_122zsJ13IkEQPT-AtGkh0'
+        apiOptions={{ language: 'es', region: 'co' }}
+        selectProps={{
+          onChange: setValue,
+        }}
+      /> */}
       <Box
         sx={{
           marginTop: 8,
@@ -156,6 +171,20 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
                   rows={4}
                 />
               </FormControl>
+            </Grid>
+            <Grid container spacing={2} item xs={12} sm={12}>
+              <Grid item xs={5}>
+                <FormControl fullWidth>
+                  <TextField id="lat" label="Latitud: 4.754017..." name="lat" />
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl fullWidth>
+                  <TextField id="lng" label="Longitud: -74.247825..." name="lng" />
+                </FormControl>
+              </Grid>
+            </Grid>
+            <Grid item xs={12} sm={12}>
             </Grid>
             <Grid item xs={12} sm={12}>
               <FormControl  sx={{ width: 500 }}>

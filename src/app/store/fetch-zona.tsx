@@ -4,8 +4,7 @@ export const fetchZonasByUser = async (limit: any, start: any, idZona: any, type
     start = start==0 ?0 :(start-1)*10
     try {
         const response = await fetch(`${URL}/users/zonas/${limit}/${start}/${idZona}/${type}/${search}`, {cache: 'no-store'});
-        console.log(response)
-        
+
         if(!response.ok){
             throw new Error(`Ruquest failed with status ${response.status}`)
         }
