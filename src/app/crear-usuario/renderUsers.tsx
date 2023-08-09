@@ -10,13 +10,14 @@ export const RenderUsers = async function RenderUsers({
   limit,
   access,
   search,
-  userId
+  userId,
+  step
 }: RenderUsersProps) {
   const user = await getUsers(page, limit, access, search);
   const zona = await fetchZonas();
   let puntos = {puntos: []}
   if(userId){
-    puntos = await getPuntos(userId);
+    puntos = await getPuntos(userId, step);
   }
 
   return <SelectUser data={user} zona={zona} userId={userId} puntos={puntos?.puntos} />;

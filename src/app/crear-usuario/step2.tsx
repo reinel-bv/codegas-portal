@@ -19,6 +19,7 @@ import {
   IconButton
 } from '@mui/material';
 import {Add, Delete} from '@mui/icons-material';
+import { usePathname, useRouter } from 'next/navigation';
 import { Snack } from '../components/snackBar';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import { AlertDialog } from '../components/alertDialog/alertDialog';
@@ -62,7 +63,8 @@ const RenderPunto = ({puntos, handleDelete}: any) => (
 );
 
 export default function Step4({ userId, zona, puntos }: { userId: any; zona: any[], puntos: any[] }) {
-
+  const router = useRouter();
+  const pathname = usePathname()
   const [showSnack, setShowSnack] = useState(false);
   const [message, setMessage] = useState('');
   const [showDialog, setShowDialog] = useState(false);
@@ -70,7 +72,7 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
   const [puntosList, setPuntosList] = useState(puntos);
   const [userSelected, setUserSelected] = useState({direccion: '', id: ''});
  
-  const [value, setValue] = useState(null);
+ 
 
   const [selectedZona, setSelectedZona] = useState('');
   const handleZonaChange = (id: any) => {
@@ -101,6 +103,7 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
       const [lat, lng] = data.location.split(", ");
       const updatedPunto = [...puntosList, { direccion: data.direccion, nombrezona: selectedZona, capacidad: data.capacidad, observacion: data.observacion, lat, lng }];
       setPuntosList(updatedPunto);
+      router.push(`${pathname}?userId=${userId}&step=${updatedPunto.length}`, undefined)
     }
   };
   const handleDelete = (id: any, direccion: any) => {

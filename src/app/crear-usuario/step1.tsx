@@ -8,6 +8,7 @@ import {createUser, editUser, getUserById} from "../store/fetch-user"
 import {DataContext} from '../context/context'
 import { generate } from '@wcj/generate-password';
 
+
 const GENERATE_PASS = generate()
 export default function Step1({data, userId, setActiveStep}: any) {
   const {createUserFirebase}: any = useContext(DataContext)
@@ -26,12 +27,13 @@ export default function Step1({data, userId, setActiveStep}: any) {
     nombre: null,
     celular: null,
     acceso: null,
+    idpadre: ''
   });
   
   useEffect(() => {
     const fetchData = async () => {
       const {user} = await getUserById(userId);
- 
+     
       setUserInfo(user)
       setNewAcceso(user.acceso)
       setTipo(user.tipo)
@@ -55,7 +57,7 @@ export default function Step1({data, userId, setActiveStep}: any) {
       razon_social: data.get('razon_social'),
       direccion_factura: data.get('direccion_factura'),
       codt: data.get('codt'),
-      valorUnitario: data.get('valorUnitario'),
+      valorUnitario: data.get('valorunitario'),
       acceso: data.get('acceso'),
       idPadre: idPadre,
       _id: userId
@@ -63,6 +65,7 @@ export default function Step1({data, userId, setActiveStep}: any) {
     editUser(newData)
     setActiveStep();
   }
+ 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -84,9 +87,10 @@ export default function Step1({data, userId, setActiveStep}: any) {
           razon_social: data.get('razon_social'),
           direccion_factura: data.get('direccion_factura'),
           codt: data.get('codt'),
-          valorUnitario: data.get('valorUnitario'),
+          valorUnitario: data.get('valorunitario'),
           acceso: data.get('acceso'),
           idPadre: idPadre,
+          tipo: newTipo,
           uid: response.uid,
           pass: GENERATE_PASS
         };
@@ -191,11 +195,12 @@ export default function Step1({data, userId, setActiveStep}: any) {
             }
               <Grid item xs={12} sm={12}>
                 <FormControl fullWidth>
-                  <InputLabel id="idPadre">Veo / Padre</InputLabel>
+                  {!userInfo?.idpadre &&<InputLabel id="idPadre">Veo / Padre</InputLabel>}
                   <Select
                       labelId="idPadre"
-                      id="idPadre"
-                      value={idPadre}
+                      id="idPadre" 
+                      name="idPadre"
+                      value={userInfo?.idpadre}
                       label="Padre"
                       onChange={handleChangeSelect}
                     >

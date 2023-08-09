@@ -1,17 +1,15 @@
 import URL from '../utils/url' 
  
 
-export const getPuntos = async (id: any) => {
+export const getPuntos = async (id: any, step: string | undefined) => {
+ 
     try {
-        const response = await fetch(`${URL}/pun/punto/byCliente/${id}`, {
-            next: { revalidate: 100 } 
-        });
+        const response = await fetch(`${URL}/pun/punto/byCliente/${id}`, {cache: 'no-store'});
         
         if(!response.ok){
             throw new Error(`Ruquest failed with status ${response.status}`)
         }
         const data = await response.json();
-
         return data;
     } catch (error) {
         console.error(error);

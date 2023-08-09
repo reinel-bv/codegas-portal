@@ -3,6 +3,7 @@ import React, {useState} from 'react';
  
 import {Avatar, Box, Container, CssBaseline, Typography,  Stepper, Step, StepLabel, Button} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+
 import Step1 from "./step1"
 import Step2 from "./step2"
 
@@ -12,6 +13,11 @@ const steps = ['Datos Generales', 'Ubicación Entrega'];
 export default function SelectUser({data, userId, zona, puntos}: any) {
   const [activeStep, setActiveStep] = useState(0);
 
+
+  const nextStep = () => {
+    setActiveStep(1)
+    
+  }
   const RenderTitleSteper = () =>(
     <Stepper activeStep={activeStep}  sx={{ mt: 3 }}>
       {steps.map((label, index) => {
@@ -50,14 +56,14 @@ export default function SelectUser({data, userId, zona, puntos}: any) {
         
         {
           activeStep===0
-          ?<Step1 data={data} userId={userId} setActiveStep={()=>setActiveStep(1)}/>
+          ?<Step1 data={data} userId={userId} setActiveStep={nextStep}/>
           :activeStep===1
           &&<Step2 userId={userId} zona={zona} puntos={puntos} />
         }
 
 
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 2 }}>
-          <Button onClick={()=>setActiveStep(0)}>
+          <Button onClick={()=>{setActiveStep(0)}}>
             {activeStep>0 &&'Anterior'}
           </Button>
         </Box>
