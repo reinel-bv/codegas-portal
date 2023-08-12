@@ -5,12 +5,13 @@ import {Avatar, Box, Button, FormControl, Container, CssBaseline, InputLabel, Gr
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {Snack} from "../components/snackBar"
 import {forma, mes, dia1, dia2, diaSemana, frecuencia} from "../utils/pedido_info"
-import {createPedido} from "../store/fetch-pedido"
+import {createPedido, validatePedido} from "../store/fetch-pedido"
 import { usePathname, useRouter } from 'next/navigation';
 import {Date} from "../components/date"
+import AlertConfirm from '../components/alertConfirm/alertConfirm';
 import moment from 'moment';
 import {DataContext} from '../context/context'
-
+import dayjs from 'dayjs';
 
 export default function CrearPedido({user, puntos}: any) {
   const {idUser: usuarioCrea}: any = useContext(DataContext)
@@ -22,6 +23,9 @@ export default function CrearPedido({user, puntos}: any) {
   const [puntoId, setPuntoId] = useState('');
   const [showSnack, setShowSnack] = useState(false);
   const [message, setMessage] = useState("");
+  const [dataPedido, setDataPedido] = useState(null);
+  const [totalPedidosHoy, setTotalPedido] = useState(0);
+  const [openConfirm, setOpenConfirm] = useState(false);
   const [form, setForm] = useState({
     forma: null,
     frecuencia: null,
@@ -44,7 +48,7 @@ export default function CrearPedido({user, puntos}: any) {
     setPuntoId(event.target.value as string);
   };
 
-  const [date, setDate] = useState('')
+  const [date, setDate] = useState(moment().format('YYYY-MM-DD'))
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -52,7 +56,7 @@ export default function CrearPedido({user, puntos}: any) {
       forma: data.get('forma'),
       cantidadKl: Number(data.get('cantidadKl')),
       cantidadPrecio: Number(data.get('cantidadPrecio')),
-      fechaSolicitud: moment(date).format('YYYY-MM-DD'),
+      fechaSolicitud: dayjs(date).format('YYYY-MM-DD'),
       usuarioId,
       puntoId: Number(data.get('puntoId')),
       observacion: data.get('observaciones'),
@@ -63,16 +67,31 @@ export default function CrearPedido({user, puntos}: any) {
     };
     
     if(!newData.forma || !newData.usuarioId || !newData.puntoId ) alert("Llena los campos obligatorios")
-    saveData(newData)
+    validateData(newData)
   };
   const handleChange = (prop:string, value: string | null) => {
     setForm({...form, [prop]: value});
   };
   
  
+  const validateData = async (data: any) => {
+    const {status, pedido} = await validatePedido(data.usuarioId, data.puntoId)
+
+    if (pedido===0) {
+      saveData(data)
+    } else {
+      setOpenConfirm(true)
+      setDataPedido(data)
+      setTotalPedido(pedido)
+    }
+  }
+  
+
   const saveData = async (data: any) => {
-    const {status} = await createPedido(data)
+   
+    const {status} = await createPedido(dataPedido || data)
     if (status) {
+      setOpenConfirm(false)
       setShowSnack(true)
       setMessage("Pedido Guardado con exito")
     }
@@ -131,7 +150,7 @@ export default function CrearPedido({user, puntos}: any) {
             }
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
-                <Date setValueDate={setDate} />
+                <Date setValueDate={setDate} value={date} />
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={12}>
@@ -307,6 +326,12 @@ export default function CrearPedido({user, puntos}: any) {
         </Box>
       </Box>
       <Snack show={showSnack} setShow={()=>setShowSnack(false)} message={message} />
+      <AlertConfirm 
+        openConfirm={openConfirm} 
+        handleConfirm={()=>saveData(null)} 
+        handleClose={()=>setOpenConfirm(false)} 
+        title={`Hoy se han creado ${totalPedidosHoy} pedidos para este usuario, desea agregar otro?`} 
+      />
     </Container>
   );
 }

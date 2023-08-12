@@ -7,7 +7,7 @@ export const RenderCrearPedido = async function RenderCrearPedido({page, limit, 
   const user = await getUsers(page, limit, access, search);
   let puntos = {puntos: null}
   if(idUser){
-    puntos = await getPuntos(idUser);
+    puntos = await getPuntos(idUser, '1');
   }
   return <CrearPedido user={user} puntos={puntos.puntos}  />;
 }  

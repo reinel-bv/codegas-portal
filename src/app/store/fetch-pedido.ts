@@ -2,13 +2,13 @@ import URL from '../utils/url'
 
 export const fetchPedido = async (idUser: any, start: any, search: string, acceso: string, limit: number, newValue: any) => {
     start = start==0 ?0 :(start-1)*10
-    
     try {
         const response = await fetch(`${URL}/ped/pedido/todos/app/${idUser}/${limit}/${start}/${acceso}/${search}`, {cache: 'no-store'});
         if (response.status !== 200) {
             throw new Error(`Request failed with status ${response.status}`);
         }
         const {pedido} = await response.json();
+        console.log(pedido)
         return pedido;
     } catch (error) {
         console.error(error);
@@ -66,6 +66,19 @@ export const createPedido = async(date: any) =>{
         const response = await fetch(`${URL}/ped/pedido`, {
             method: 'POST', 
             body: JSON.stringify(date),
+            cache: 'no-store'
+        });
+        const data = await response.json();
+        return data
+    } catch (error){
+        console.error(error)
+    }
+}
+
+export const validatePedido = async(usuarioId: number, puntoId :number, ) =>{
+    try {
+        const response = await fetch(`${URL}/ped/pedido/today/${usuarioId}/${puntoId}`, {
+            method: 'GET', 
             cache: 'no-store'
         });
         const data = await response.json();

@@ -7,7 +7,7 @@ export const RenderCrearTanque = async function RenderCrearTanque({page, limit, 
   const alerts = await getAlerts(tanqueId);
   let puntos = {puntos: null}
   if(userId){
-    puntos = await getPuntos(userId);
+    puntos = await getPuntos(userId, "1");
   }
   
   return (

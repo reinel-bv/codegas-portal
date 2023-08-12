@@ -2,12 +2,20 @@
 import {FC, useEffect, useContext} from "react"
 import { Table, TableContainer, Paper, TableHead, TableRow, TableCell, TableBody, Breadcrumbs, Typography } from "@mui/material"
 import Link from "next/link"
+import Button from '@mui/material/Button';
 import {RenderVehiculos} from "./renderVehiculos"
 import {DataContext} from "../../../context/context"
+import { useRouter } from "next/navigation";
 
-const Vehiculos: FC = ({params}: any) => {
+export default function Vehiculos({params}: any) {
+  const router = useRouter()
   const {idPedido} = params 
   const {idUser} = useContext(DataContext)
+
+
+  // const finalSlashIndex = router.asPath.lastIndexOf('/')
+  // const previousPath = router.asPath.slice(0, finalSlashIndex)
+
 
   // const data = useMemo(() => {
   //   const idPedido = params.idPedido;
@@ -19,13 +27,13 @@ const Vehiculos: FC = ({params}: any) => {
   //   }
   // }, [params.idPedido]);
 
- ;
+ 
   return(
     <TableContainer component={Paper}>
       <Breadcrumbs aria-label="breadcrumb" sx={{padding: "15px"}}>
-        <Link style={{color: "#a2a1a1"}}  href="/order">
+        <Button variant="contained" onClick={()=>router.back()} >
           Pedidos
-        </Link>
+        </Button>
         <Typography color="#a2a1a1"> Pedido N:  
           {
             idPedido.includes("%2C")
@@ -53,4 +61,4 @@ const Vehiculos: FC = ({params}: any) => {
   )  
 }
 
-export default Vehiculos
+ 

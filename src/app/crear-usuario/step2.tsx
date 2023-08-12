@@ -217,7 +217,7 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
         openConfirm={openConfirm} 
         handleConfirm={()=>confirmDelete()} 
         handleClose={()=>setOpenConfirm(false)} 
-        title={userSelected?.direccion} 
+        title={`Seguro desea elminar a: ${userSelected?.direccion}`}
       />
     </Container>
   );

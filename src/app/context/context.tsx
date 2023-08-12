@@ -42,7 +42,6 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
       subscriber(); // unsubscribe on unmount
     };
   }, []);
-  console.log(nombre)
   const data: DataProps = {
     idUser: idUser ? idUser : typeof window !== "undefined" ? localStorage.getItem("idUser") : null,
     acceso: acceso ? acceso : typeof window !== "undefined" ? localStorage.getItem("acceso") : null,
@@ -52,9 +51,7 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const { user } = await signInWithEmailAndPassword(auth, email, password);
         const { _id, acceso, nombre } = await getUserByUid(user.uid);
-        
-        console.log(_id)
-        console.log(nombre)
+    
         if (typeof window !== "undefined") {
           localStorage.setItem("user", JSON.stringify(user));
           localStorage.setItem("idUser", JSON.stringify(_id));

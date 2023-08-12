@@ -16,7 +16,7 @@ const AlertConfirm = ({openConfirm, title, handleConfirm, handleClose}: any) => 
       aria-labelledby="draggable-dialog-title"
     >
       <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-        Seguro desea elminar a: {title}
+        {title}
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
