@@ -8,7 +8,7 @@ export const fetchPedido = async (idUser: any, start: any, search: string, acces
             throw new Error(`Request failed with status ${response.status}`);
         }
         const {pedido} = await response.json();
-        console.log(pedido)
+        
         return pedido;
     } catch (error) {
         console.error(error);

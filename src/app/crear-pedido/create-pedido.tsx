@@ -12,7 +12,8 @@ import AlertConfirm from '../components/alertConfirm/alertConfirm';
 import moment from 'moment';
 import {DataContext} from '../context/context'
 import dayjs from 'dayjs';
-
+import SaveIcon from '@mui/icons-material/Save';
+import LoadingButton from '@mui/lab/LoadingButton';
 export default function CrearPedido({user, puntos}: any) {
   const {idUser: usuarioCrea}: any = useContext(DataContext)
 
@@ -26,6 +27,7 @@ export default function CrearPedido({user, puntos}: any) {
   const [dataPedido, setDataPedido] = useState(null);
   const [totalPedidosHoy, setTotalPedido] = useState(0);
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     forma: null,
     frecuencia: null,
@@ -49,8 +51,13 @@ export default function CrearPedido({user, puntos}: any) {
   };
 
   const [date, setDate] = useState(moment().format('YYYY-MM-DD'))
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: any) => {
+    
     event.preventDefault();
+    if(event.key === 'Enter') {
+      setSearch(event.target.value)
+      router.push(`${pathname}?search=${event.target.value}`, undefined)
+    }
     const data = new FormData(event.currentTarget);
     const newData = {
       forma: data.get('forma'),
@@ -66,8 +73,12 @@ export default function CrearPedido({user, puntos}: any) {
       dia2: data.get('dia2')
     };
     
-    if(!newData.forma || !newData.usuarioId || !newData.puntoId ) alert("Llena los campos obligatorios")
-    validateData(newData)
+    if(!newData.forma || !usuarioId || !puntoId ) {
+      alert("Llena los campos obligatorios")
+    }else{
+      setLoading(true)
+      validateData(newData)
+    }
   };
   const handleChange = (prop:string, value: string | null) => {
     setForm({...form, [prop]: value});
@@ -76,7 +87,9 @@ export default function CrearPedido({user, puntos}: any) {
  
   const validateData = async (data: any) => {
     const {status, pedido} = await validatePedido(data.usuarioId, data.puntoId)
-
+    console.log(pedido)
+    setUsuarioId('')
+    router.push(`${pathname}`)
     if (pedido===0) {
       saveData(data)
     } else {
@@ -88,9 +101,9 @@ export default function CrearPedido({user, puntos}: any) {
   
 
   const saveData = async (data: any) => {
-   
     const {status} = await createPedido(dataPedido || data)
     if (status) {
+      setLoading(false)
       setOpenConfirm(false)
       setShowSnack(true)
       setMessage("Pedido Guardado con exito")
@@ -315,14 +328,26 @@ export default function CrearPedido({user, puntos}: any) {
               }
               
             </Grid>
-          <Button
+          {/* <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
             Guardar
-          </Button>
+          </Button> */}
+          <LoadingButton
+            type="submit"
+            loading={loading}
+            loadingPosition="start"
+            startIcon={<SaveIcon />}
+            variant="contained"
+            fullWidth
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Guardar
+          </LoadingButton>
+
         </Box>
       </Box>
       <Snack show={showSnack} setShow={()=>setShowSnack(false)} message={message} />

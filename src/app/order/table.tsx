@@ -69,7 +69,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
             </TableCell>
             <TableCell align="center">
               <Button variant="contained">
-                <Link href={`order/${_id}/${moment(fechaentrega).format('YYYY-MM-DD')}`} style={{color: "#ffffff", textDecoration: 'none'}}>
+                <Link href={`carros?placa=${_id}&date=${moment(fechaentrega).format('YYYY-MM-DD')}`} style={{color: "#ffffff", textDecoration: 'none'}}>
                   {placa ?placa :"Sin Placa"}
                 </Link>
               </Button>
@@ -252,7 +252,7 @@ export default function RenderTable({orders}: any) {
             <Grid item xs={12} sm={1}>
               <Button variant="contained" sx={{ marginTop: 1, marginLeft: 1, padding: 2, width: "100%" }}>
                 <Link 
-                  href={`order/${newValorWithArray}/${moment().format('YYYY-MM-DD')}`} 
+                  href={`carros?placa=${newValorWithArray}&date=${moment().format('YYYY-MM-DD')}`} 
                   style={{
                     color: "#ffffff", 
                     textDecoration: 'none'
