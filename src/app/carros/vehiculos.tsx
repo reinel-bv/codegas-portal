@@ -30,8 +30,7 @@ export default function VehiculosDialog({carro}: any) {
   const date = searchParams.get('date');
   
   const asignCar = async (_id: any, placa: any) => {
-    const idPedidoArray = placas.split("%2C").filter((value: any) => value !== "");
-  
+    const idPedidoArray = placas.split(",").filter((value: any) => value !== "");
     await Promise.all(idPedidoArray.map(async (e: any) => {
       const { status } = await addCarPedido(e, _id, date, idUser);
       if (status) {

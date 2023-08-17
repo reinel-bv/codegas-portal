@@ -69,7 +69,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
             </TableCell>
             <TableCell align="center">
               <Button variant="contained">
-                <Link href={`carros?placa=${_id}&date=${moment(fechaentrega).format('YYYY-MM-DD')}`} style={{color: "#ffffff", textDecoration: 'none'}}>
+                <Link href={`carros?placa=${_id}&date=${fechaentrega ?moment(fechaentrega).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')}`} style={{color: "#ffffff", textDecoration: 'none'}}>
                   {placa ?placa :"Sin Placa"}
                 </Link>
               </Button>
