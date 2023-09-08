@@ -87,3 +87,32 @@ export const validatePedido = async(usuarioId: number, puntoId :number, ) =>{
         console.error(error)
     }
 }
+
+
+export const sendNovedad = async(data: any) =>{
+    try {
+        const response = await fetch(`${URL}/ped/pedido/novedad-innactivo`, {
+            method: 'PUT', 
+            body: JSON.stringify(data),
+            cache: 'no-store'
+        });
+        const dataresponse = await response.json();
+        return dataresponse
+    } catch (error){
+        console.error(error)
+    }
+}
+
+export const resetPedido = async(idPedido: any) =>{
+    console.log(idPedido)
+    try {
+        const response = await fetch(`${URL}/ped/pedido/reset/${idPedido}`, {
+            method: 'GET', 
+            cache: 'no-store'
+        });
+        const dataresponse = await response.json();
+        return dataresponse
+    } catch (error){
+        console.error(error)
+    }
+}

@@ -87,7 +87,7 @@ export default function CrearPedido({user, puntos}: any) {
  
   const validateData = async (data: any) => {
     const {status, pedido} = await validatePedido(data.usuarioId, data.puntoId)
-    console.log(pedido)
+ 
     setUsuarioId('')
     router.push(`${pathname}`)
     if (pedido===0) {
@@ -106,6 +106,7 @@ export default function CrearPedido({user, puntos}: any) {
       setLoading(false)
       setOpenConfirm(false)
       setShowSnack(true)
+      setPuntoId('')
       setMessage("Pedido Guardado con exito")
     }
   }

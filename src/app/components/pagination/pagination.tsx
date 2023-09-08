@@ -14,7 +14,7 @@ export function PaginationTable({total}: any) {
   page = page == "0" ? "1" : page;
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     if(pathname==="/order"){
-      router.push(`${pathname}?page=${value}&idUser=${idUser}&acceso=${acceso}`);
+      router.push(`${pathname}?page=${value}&idUser=${idUser}&search=${search}&acceso=${acceso}`);
     } else {
       router.push(`${pathname}?page=${value}&search=${search ?? undefined}`);
     }

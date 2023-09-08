@@ -1,6 +1,6 @@
 'use client' 
 import { Fragment, useState, useEffect } from 'react';
-import { TableRow, TableCell, Box, Collapse, Button, Checkbox, Table, TableBody, TableContainer, TableHead, Typography, Grid, Paper } from '@mui/material';
+import { TableRow, TableCell, Box, Collapse, Button, Checkbox, Table, TableBody, TableContainer, TableHead, Typography, Grid, Paper, FormControl, TextField } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import moment from "moment"
 import dayjs from 'dayjs';
@@ -10,19 +10,19 @@ import Link from 'next/link';
 import {SelectState} from "../components/selecState"
 import {colors} from "../utils/colors"
 import { PaginationTable } from "../components/pagination/pagination";
-import {UpdateDatePedido, UpdateStatePedido} from "../store/fetch-pedido"
+import {UpdateDatePedido, UpdateStatePedido, sendNovedad, resetPedido} from "../store/fetch-pedido"
 import {Date} from "../components/date"
 import {Snack} from "../components/snackBar"
 import {AlertDialog} from "../components/alertDialog/alertDialog"
 import Image from "next/image"
-
+import AlertConfirm from '../components/alertConfirm/alertConfirm';
 const {espera, noentregado, innactivo, activo, asignado, otro} = colors
 
 
 
 
 const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fechasolicitud, isCheked,
-  fechaentrega, forma, kilos, valorunitario, placa, novedades, estado, entregado, imagencerrar, addValues, zona, updateDate, updateStatus}: any) => {
+  fechaentrega, forma, kilos, valorunitario, placa, novedades, estado, entregado, imagencerrar, addValues, zona, updateDate, updateStatus, setOpenConfirm}: any) => {
   
   const [open, setOpen] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
@@ -95,6 +95,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
                           <TableCell align="center">F Creación</TableCell>
                           <TableCell align="center">Obervacion</TableCell>
                           <TableCell align="center">Imagen</TableCell>
+                          <TableCell align="center">&nbsp;</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -111,6 +112,9 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
                           <TableCell align="center">
                             {imagencerrar &&<Button variant="contained" onClick={()=>setShowDialog(true)}>Si</Button>}
                           </TableCell>
+                          <TableCell align="center">
+                            {<Button variant="contained" onClick={()=>setOpenConfirm(_id)}>Resetear</Button>}
+                          </TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
@@ -124,6 +128,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
           <AlertDialog showDialog={showDialog} setShowDialog={()=>setShowDialog(false)}>
             {imagencerrar &&<Image src={imagencerrar} alt="codegas colombia" width={200} height={500}/> }
           </AlertDialog>
+
     </Fragment>
   )
 }
@@ -134,7 +139,10 @@ export default function RenderTable({orders}: any) {
   const [isCheked, setIsCheked] = useState(false);
   const [newOrder, setNewOrder] = useState(orders)
   const [showSnack, setShowSnack] = useState(false);
+  const [showDialogInnactivo, setShowDialogInnactivo] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
   const [message, setMessage] = useState("");
+  const [pedidoId, setPedidoId] = useState("");
 
   const router = useRouter();
   const pathname = usePathname()
@@ -234,12 +242,42 @@ export default function RenderTable({orders}: any) {
       setIsCheked(false)
       setValorWithArray([])
     }
-   
+    
     const {status} = await UpdateStatePedido(data)
     if (status) {
       setShowSnack(true)
       setMessage(`estado ${state} cambiado!`)
       router.push(`${pathname}?page=${page}&search=${search}&idUser=${idUser}&acceso=${acceso}&newValue=${id+state}`, undefined)
+    }
+    if(state=='innactivo'){
+      setShowDialogInnactivo(true)
+      setPedidoId(id)
+    }
+  }
+  const sendNovedadInnactivo = async(event: any) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const data = {
+      novedad: form.get('novedad'),
+      pedidoId,
+    };
+
+    const {status} = await sendNovedad(data)
+    if (status) {
+      setShowSnack(true)
+      setMessage(`Novedad enviada!`)
+      setShowDialogInnactivo(false)
+      setPedidoId('')
+    }
+  }
+  const resetOrder = async() => {
+    const {status} = await resetPedido(pedidoId)
+    if (status) {
+      setShowSnack(true)
+      setMessage(`Pedido Reseteado!`)
+      setOpenConfirm(false)
+      setPedidoId('')
+      router.push(`${pathname}?page=${page}&search=${search}&idUser=${idUser}&acceso=${acceso}&newValue=${pedidoId+200}`, undefined)
     }
   }
 
@@ -301,6 +339,7 @@ export default function RenderTable({orders}: any) {
                 addValues={addValues} 
                 updateDate={updateDate}
                 updateStatus={updateStatus}
+                setOpenConfirm={(id: any)=>{setOpenConfirm(true), setPedidoId(id)}}
               /> 
             ))
           }
@@ -309,6 +348,24 @@ export default function RenderTable({orders}: any) {
       </Table>
       <PaginationTable total={newOrder[0]?.total ?? 0} />
       <Snack show={showSnack} setShow={()=>setShowSnack(false)} message={message} />
+       <AlertDialog showDialog={showDialogInnactivo} setShowDialog={() => setShowDialogInnactivo(false)}>
+        <Box component="form" noValidate onSubmit={sendNovedadInnactivo}>
+          <Grid item xs={12} sm={12}>
+            <FormControl sx={{ width: 500 }}>
+              <TextField id="novedad" label="Novedad" name="novedad" multiline rows={4} />
+            </FormControl>
+          </Grid>
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+            Guardar
+          </Button>
+        </Box>
+      </AlertDialog>
+      <AlertConfirm 
+        openConfirm={openConfirm} 
+        handleConfirm={()=>resetOrder()} 
+        handleClose={()=>setOpenConfirm(false)} 
+        title={`Seguro desea resetear el pedido ${pedidoId}?`} 
+      />
     </TableContainer>
   )
 }
