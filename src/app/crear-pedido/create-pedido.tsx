@@ -1,5 +1,5 @@
 'use client'
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
  
 import {Avatar, Box, Button, FormControl, Container, CssBaseline, InputLabel, Grid, MenuItem, Select, TextField, Typography, SelectChangeEvent, Autocomplete} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -35,14 +35,18 @@ export default function CrearPedido({user, puntos}: any) {
     dia2: null
   });
 
+  useEffect(()=>{
+      router.push(`${pathname}?usuarioCrea=${usuarioCrea}`);
+  }, [])
+
   const handleChangeSelect = (event: any, value: any) => {
     event.preventDefault();
     setUsuarioId(value._id as string);
-    router.push(`${pathname}?search=${search}&idUser=${value._id}`, undefined)
+    router.push(`${pathname}?search=${search}&idUser=${value._id}&usuarioCrea=${usuarioCrea}`, undefined)
 
     if(event.key === 'Enter') {
       setSearch(event.target.value)
-      router.push(`${pathname}?search=${event.target.value}`, undefined)
+      router.push(`${pathname}?search=${event.target.value}&usuarioCrea=${usuarioCrea}`, undefined)
     }
 
   };

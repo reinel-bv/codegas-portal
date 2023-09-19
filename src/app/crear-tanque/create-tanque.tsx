@@ -1,8 +1,10 @@
 'use client'
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
  
 import {Avatar, Box, Container, CssBaseline, Typography,  Stepper, Step, StepLabel, Button} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import {DataContext} from '../context/context'
+import { usePathname, useRouter } from 'next/navigation';
 import Step1 from "./step1"
 import Step2 from "./step2"
 import Step3 from "./step3"
@@ -12,6 +14,12 @@ const steps = ['Datos Generales', 'Imagenes', 'Info Usuario', 'Alertas'];
 
 export default function CreateTanque({data, puntos, tanqueId, alerts}: any) {
   const [activeStep, setActiveStep] = useState(0);
+  const {idUser: usuarioCrea}: any = useContext(DataContext)
+  const router = useRouter();
+  const pathname = usePathname();
+  useEffect(()=>{
+    router.push(`${pathname}?usuarioCrea=${usuarioCrea}`);
+}, [])
 
   const RenderTitleSteper = () =>(
     <Stepper activeStep={activeStep}  sx={{ mt: 3 }}>

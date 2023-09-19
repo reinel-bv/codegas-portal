@@ -22,7 +22,7 @@ const {espera, noentregado, innactivo, activo, asignado, otro} = colors
 
 
 const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fechasolicitud, isCheked,
-  fechaentrega, forma, kilos, valorunitario, placa, novedades, estado, entregado, imagencerrar, addValues, zona, updateDate, updateStatus, setOpenConfirm}: any) => {
+  fechaentrega, forma, kilos, valorunitario, placa, observacion_pedido, estado, entregado, imagencerrar, addValues, zona, updateDate, updateStatus, setOpenConfirm}: any) => {
   
   const [open, setOpen] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
@@ -107,7 +107,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
                           <TableCell align="center">{cedula}</TableCell>
                           <TableCell align="center">{moment(creado).format('YYYY-MM-DD HH:mm')}</TableCell>
                           <TableCell align="center">
-                            {novedades &&<Button variant="contained">Si</Button>}
+                            {observacion_pedido}
                           </TableCell>
                           <TableCell align="center">
                             {imagencerrar &&<Button variant="contained" onClick={()=>setShowDialog(true)}>Si</Button>}

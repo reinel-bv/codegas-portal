@@ -3,6 +3,7 @@ export interface ParamsProps {
       page?: number;
       idUser?: number;
       search?: string;
+      usuarioCrea?: number;
     };
 }
    
@@ -12,4 +13,5 @@ export type RenderPedidoProps = {
   access: string;
   search?: string | undefined;
   idUser?: number;
+  usuarioCrea?: number;
 }
