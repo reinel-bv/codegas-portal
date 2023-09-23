@@ -1,8 +1,7 @@
 'use client';
 import react, { ReactElement, useContext, useEffect } from 'react';
 import { Container, Grid, Box} from '@mui/material';
-import { redirect } from 'next/navigation';
-import { usePathname, useRouter } from 'next/navigation';
+import { redirect, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {DataContext} from "../context/context"
 
  
@@ -10,10 +9,11 @@ const LoyoutRevisiones = ({children}: {children: React.ReactNode}): ReactElement
   const {user, idUser, acceso, login}: any = useContext(DataContext)
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  let search = searchParams.get('search');
+  const page = searchParams.get('page');
   useEffect(()=>{
- 
-      router.push(`${pathname}?page=0&idUser=${idUser}&acceso=${acceso}`);
-    
+    router.push(`${pathname}?page=${page ??0}&idUser=${idUser}&acceso=${acceso}&search=${search ?? undefined}`);
   }, [idUser])
   
   if(!user) redirect('/')

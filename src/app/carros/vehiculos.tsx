@@ -10,7 +10,7 @@ import { blue } from '@mui/material/colors';
 import {Snack} from "../components/snackBar"
 import {addCarPedido} from "../store/fetch-pedido"
 import {DataContext} from "../context/context"
-//perf663, 89950
+
 export interface VehiculoProps {
   _id: number;
   placa: string;
@@ -24,7 +24,7 @@ export default function VehiculosDialog({carro}: any) {
    const {idUser} = useContext(DataContext)
   const [showSnack, setShowSnack] = useState(false);
   const [message, setMessage] = useState("");
- 
+  const router = useRouter()
   const searchParams = useSearchParams();
   const placas = searchParams.get('placa') || "";
   const date = searchParams.get('date');
@@ -75,10 +75,14 @@ export default function VehiculosDialog({carro}: any) {
     <Fragment>
        <TableContainer component={Paper}>
       <Breadcrumbs aria-label="breadcrumb" sx={{padding: "15px"}}>
-         
-        <Link style={{color: "#a2a1a1"}}  href="/order">
-          Pedidos
-        </Link>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            onClick={() => router.back()}
+          >
+            Pedidos
+          </Button>
         <Typography color="#a2a1a1"> Pedido N:  
           {
             placas.includes("%2C")

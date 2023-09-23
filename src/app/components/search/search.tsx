@@ -21,9 +21,6 @@ export default function InputSearch({search}: any) {
     } else {
       router.push(`${pathname}?page=1&search=${newUrl}`, undefined)
     }
-
-    
-    
   }
 
   const handleKeyPress = (event: any) => {
