@@ -1,8 +1,11 @@
 import {fetchTanques} from '../store/fetch-tanque'
+import {getUsers} from '../store/fetch-user' 
 import RenderTable from './table'
 
-export const RenderTanques = async function RenderTanques({limit, page, search}: any) {
-  let tanque = await fetchTanques(limit, page, search);
+export const RenderTanques = async function RenderTanques({limit, page, search, searchUser, access, usuarioCrea}: any) {
+  console.log({page, limit, access, search, usuarioCrea, searchUser })
+  const user = await getUsers(page, limit, access, usuarioCrea, searchUser);
+  const tanque = await fetchTanques(limit, page, search);
 
-  return <RenderTable tanques={tanque} />;
+  return <RenderTable tanques={tanque}  users={user}  />;
 }  
