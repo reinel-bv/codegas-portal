@@ -42,7 +42,7 @@ export default function VehiculosDialog({carro}: any) {
   const RenderVehiculos = ({data}: any) => {
     return data.map(({_id, placa, centro, conductor}: VehiculoProps)=>{
       return(
-        <TableRow>
+        <TableRow key={_id}>
           <TableCell component="th" scope="row" align="center">
             <FormControl>
               <RadioGroup

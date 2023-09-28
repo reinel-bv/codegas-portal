@@ -3,7 +3,6 @@ import {getUsers} from '../store/fetch-user'
 import RenderTable from './table'
 
 export const RenderTanques = async function RenderTanques({limit, page, search, searchUser, access, usuarioCrea}: any) {
-  console.log({page, limit, access, search, usuarioCrea, searchUser })
   const user = await getUsers(page, limit, access, usuarioCrea, searchUser);
   const tanque = await fetchTanques(limit, page, search);
 

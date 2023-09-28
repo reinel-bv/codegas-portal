@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^14.0.0",
+    "eslint-config-react-app": "^7.0.1",
     "vitest": "^0.31.1"
   }
 }
