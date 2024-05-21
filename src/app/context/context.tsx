@@ -1,18 +1,16 @@
 'use client'
-import { User, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth";
+import { User, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { getUserByUid } from "../store/fetch-user";
 import { auth } from "../utils/firebase/firebase-config";
-import {SignInProps, DataProps, EmailProps} from "./types"
-
+import {SignInProps, DataProps} from "./types"
+ 
 
 const DataContext = createContext<DataProps>({
   idUser: null,
   acceso: null,
-  nombre: null,
   user: null,
   login: async () => {},
-  recoverPass: async () => {},
   closeSesion: async () => {},
   createUserFirebase: async () => {
     throw new Error("createUserFirebase is not implemented");
@@ -22,7 +20,6 @@ const DataContext = createContext<DataProps>({
 const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [userData, setUser] = useState<User | null>(null);
   const [idUser, setIdUser] = useState<string | null>(null);
-  const [nombre, setNombre] = useState<string | null>(null);
   const [acceso, setAcceso] = useState<string | null>(null);
 
   const listenAuth = (user: User | null) => {
@@ -30,7 +27,6 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : user);
       setIdUser(localStorage.getItem("idUser") ? JSON.parse(localStorage.getItem("idUser")!) : idUser);
       setAcceso(localStorage.getItem("acceso") ? localStorage.getItem("acceso")! : acceso);
-      setNombre(localStorage.getItem("nombre") ? localStorage.getItem("nombre")! : nombre);
     } else {
       setUser(user);
     }
@@ -42,25 +38,23 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
       subscriber(); // unsubscribe on unmount
     };
   }, []);
+
   const data: DataProps = {
     idUser: idUser ? idUser : typeof window !== "undefined" ? localStorage.getItem("idUser") : null,
     acceso: acceso ? acceso : typeof window !== "undefined" ? localStorage.getItem("acceso") : null,
-    nombre: nombre ? nombre : typeof window !== "undefined" ? localStorage.getItem("nombre") : null,
     user: userData,
     login: async ({ email, password }: SignInProps) => {
       try {
         const { user } = await signInWithEmailAndPassword(auth, email, password);
-        const { _id, acceso, nombre } = await getUserByUid(user.uid);
+        const { _id, acceso } = await getUserByUid(user.uid);
     
         if (typeof window !== "undefined") {
           localStorage.setItem("user", JSON.stringify(user));
           localStorage.setItem("idUser", JSON.stringify(_id));
           localStorage.setItem("acceso", acceso);
-          localStorage.setItem("nombre", nombre);
         }
       
         setUser(user);
-        setNombre(nombre);
         setIdUser(_id);
         setAcceso(acceso);
       } catch (error) {
@@ -78,9 +72,9 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
         console.error(error);
       }
     },
-    createUserFirebase: async (email: string, pass: string) => {
+    createUserFirebase: async (email: string) => {
       try {
-        const { user } = await createUserWithEmailAndPassword(auth, email, pass);
+        const { user } = await createUserWithEmailAndPassword(auth, email, "aef*/aef");
         return user;
       } catch (error) {
         if (error instanceof Error) {
@@ -88,14 +82,6 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
         } else {
           return "unknown error";
         }
-      }
-    },
-    recoverPass: async (email: EmailProps) => {
-      try {
-        const emailAddress = typeof email === 'string' ? email : email.email;
-        await sendPasswordResetEmail(auth, emailAddress);
-      } catch (error) {
-        console.error(error);
       }
     }
   };

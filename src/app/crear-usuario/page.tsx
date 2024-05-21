@@ -6,13 +6,12 @@ const ACCESS = 'administradores';
 const LIMIT = 20;
 
 export default function SignUp({ searchParams }: ParamsProps) {
-  let { step, search, page, userId } = searchParams;
+  let { search, page, userId } = searchParams;
   search = search ?? undefined
   page = page ?? 0
-  step = step?? "0"
   return (
     <>
-      {RenderUsers({ search, page, limit: LIMIT, access: ACCESS, userId, step })}
+      {RenderUsers({ search, page, limit: LIMIT, access: ACCESS, userId })}
     </>
   );
 }

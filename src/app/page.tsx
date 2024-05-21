@@ -21,7 +21,7 @@ function Copyright(props: any) {
   );
 }
 
- 
+// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 
@@ -30,7 +30,7 @@ export default function SignIn() {
   const {user, login}: any = useContext(DataContext)
   
   useEffect(()=>{
-    if(user?.email) redirect('/tanques')
+    if(user?.email) redirect('/zonas')
   }, [user])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -77,7 +77,7 @@ export default function SignIn() {
               required
               fullWidth
               id="email"
-              label="Email"
+              label="Email Address"
               name="email"
               autoComplete="email"
               autoFocus
@@ -87,7 +87,7 @@ export default function SignIn() {
               required
               fullWidth
               name="password"
-              label="Contraseña"
+              label="Password"
               type="password"
               id="password"
               autoComplete="current-password"
@@ -106,7 +106,7 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/recover-pass">
+                <Link href="/">
                     Recordar contraseña?
                 </Link>
               </Grid>

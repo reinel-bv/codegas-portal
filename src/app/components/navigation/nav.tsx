@@ -58,7 +58,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const defaultTheme = createTheme();
 
 export default function Nav({children}: {children: React.ReactNode}) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [appBarWidth, setAppBarWidth] = useState('');
   const toggleDrawer = () => {
     setOpen(!open);

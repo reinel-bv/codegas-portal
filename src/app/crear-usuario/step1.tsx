@@ -1,77 +1,33 @@
 'use client'
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import { Box, Button, FormControl, Container, CssBaseline, InputLabel, Grid, MenuItem, Select, TextField, SelectChangeEvent} from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
 import {Snack} from "../components/snackBar"
 import {accesos, fields, tipos} from "../utils/users_info"
-import {createUser, editUser, getUserById} from "../store/fetch-user"
+import {createUser} from "../store/fetch-user"
 import {DataContext} from '../context/context'
-import { generate } from '@wcj/generate-password';
 
 
-const GENERATE_PASS = generate()
-export default function Step1({data, userId, setActiveStep}: any) {
+export default function Step1({data}: any) {
   const {createUserFirebase}: any = useContext(DataContext)
- 
   const [idPadre, setIdPadre] = useState('');
   const router = useRouter();
   const pathname = usePathname()
   const [showSnack, setShowSnack] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
-  const [newAcceso, setNewAcceso] = useState('')
-  const [newTipo, setTipo] = useState('')
-  const [userInfo, setUserInfo] = useState({
-    email:null,
-    cedula: null,
-    nombre: null,
-    celular: null,
-    acceso: null,
-    idpadre: ''
-  });
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      const {user} = await getUserById(userId);
-     
-      setUserInfo(user)
-      setNewAcceso(user.acceso)
-      setTipo(user.tipo)
-    };
-    userId &&fetchData();
-  }, []);
-
   const handleChangeSelect = (event: SelectChangeEvent) => {
     setIdPadre(event.target.value as string);
   };
 
-  const handleEdit =  async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const newData = {
-      email: data.get('email'),
-      cedula: data.get('cedula'),
-      nombre: data.get('nombre'),
-      celular: data.get('celular'),
-      codMagister: data.get('codMagister'),
-      razon_social: data.get('razon_social'),
-      direccion_factura: data.get('direccion_factura'),
-      codt: data.get('codt'),
-      valorUnitario: data.get('valorunitario'),
-      acceso: data.get('acceso'),
-      idPadre: idPadre,
-      _id: userId
-    };
-    editUser(newData)
-    setActiveStep();
-  }
- 
+  const [newAcceso, setNewAcceso] = useState('')
+  const [newTipo, setTipo] = useState('')
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     
     try {
-      const response = await createUserFirebase(data.get('email'), GENERATE_PASS);
+      const response = await createUserFirebase(data.get('email'));
       if (typeof response === 'string') {
         setSeverity("error")
         setShowSnack(true)
@@ -87,12 +43,10 @@ export default function Step1({data, userId, setActiveStep}: any) {
           razon_social: data.get('razon_social'),
           direccion_factura: data.get('direccion_factura'),
           codt: data.get('codt'),
-          valorUnitario: data.get('valorunitario'),
+          valorUnitario: data.get('valorUnitario'),
           acceso: data.get('acceso'),
           idPadre: idPadre,
-          tipo: newTipo,
-          uid: response.uid,
-          pass: GENERATE_PASS
+          uid: response.uid
         };
         saveData(newData);
       }
@@ -114,14 +68,10 @@ export default function Step1({data, userId, setActiveStep}: any) {
       setMessage("Usuario Guardado con exito")
       setSeverity("success")
       router.push(`${pathname}?userId=${code}`, undefined)
-      setTimeout(() => {
-        setActiveStep();
-      }, 1000);
-      
     }
   }
 
- 
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -134,7 +84,7 @@ export default function Step1({data, userId, setActiveStep}: any) {
         }}
       >
        
-        <Box component="form" noValidate onSubmit={userId ?handleEdit :handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
@@ -166,8 +116,6 @@ export default function Step1({data, userId, setActiveStep}: any) {
                       type={value}
                       id={value}
                       autoComplete={value}
-                      InputLabelProps={{ shrink: true }}
-                      defaultValue={userInfo?.email ?userInfo[value as keyof typeof userInfo] || '' :""}
                     />
                   </Grid>
                 }
@@ -195,12 +143,11 @@ export default function Step1({data, userId, setActiveStep}: any) {
             }
               <Grid item xs={12} sm={12}>
                 <FormControl fullWidth>
-                  {!userInfo?.idpadre &&<InputLabel id="idPadre">Veo / Padre</InputLabel>}
+                  <InputLabel id="idPadre">Veo / Padre</InputLabel>
                   <Select
                       labelId="idPadre"
-                      id="idPadre" 
-                      name="idPadre"
-                      value={userInfo?.idpadre}
+                      id="idPadre"
+                      value={idPadre}
                       label="Padre"
                       onChange={handleChangeSelect}
                     >
@@ -215,10 +162,10 @@ export default function Step1({data, userId, setActiveStep}: any) {
           <Button
             type="submit"
             fullWidth
-            // variant="contained"
+            variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Siguiente
+            Guardar Usuario
           </Button>
         </Box>
       </Box>

@@ -1,19 +1,17 @@
 'use client'
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
  
 import {Avatar, Box, Button, FormControl, Container, CssBaseline, InputLabel, Grid, MenuItem, Select, TextField, Typography, SelectChangeEvent, Autocomplete} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {Snack} from "../components/snackBar"
 import {forma, mes, dia1, dia2, diaSemana, frecuencia} from "../utils/pedido_info"
-import {createPedido, validatePedido} from "../store/fetch-pedido"
+import {createPedido} from "../store/fetch-pedido"
 import { usePathname, useRouter } from 'next/navigation';
 import {Date} from "../components/date"
-import AlertConfirm from '../components/alertConfirm/alertConfirm';
 import moment from 'moment';
 import {DataContext} from '../context/context'
-import dayjs from 'dayjs';
-import SaveIcon from '@mui/icons-material/Save';
-import LoadingButton from '@mui/lab/LoadingButton';
+
+
 export default function CrearPedido({user, puntos}: any) {
   const {idUser: usuarioCrea}: any = useContext(DataContext)
 
@@ -24,10 +22,6 @@ export default function CrearPedido({user, puntos}: any) {
   const [puntoId, setPuntoId] = useState('');
   const [showSnack, setShowSnack] = useState(false);
   const [message, setMessage] = useState("");
-  const [dataPedido, setDataPedido] = useState(null);
-  const [totalPedidosHoy, setTotalPedido] = useState(0);
-  const [openConfirm, setOpenConfirm] = useState(false);
-  const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     forma: null,
     frecuencia: null,
@@ -35,18 +29,14 @@ export default function CrearPedido({user, puntos}: any) {
     dia2: null
   });
 
-  useEffect(()=>{
-      router.push(`${pathname}?usuarioCrea=${usuarioCrea}`);
-  }, [])
-
   const handleChangeSelect = (event: any, value: any) => {
     event.preventDefault();
     setUsuarioId(value._id as string);
-    router.push(`${pathname}?search=${search}&idUser=${value._id}&usuarioCrea=${usuarioCrea}`, undefined)
+    router.push(`${pathname}?search=${search}&idUser=${value._id}`, undefined)
 
     if(event.key === 'Enter') {
       setSearch(event.target.value)
-      router.push(`${pathname}?search=${event.target.value}&usuarioCrea=${usuarioCrea}`, undefined)
+      router.push(`${pathname}?search=${event.target.value}`, undefined)
     }
 
   };
@@ -54,20 +44,15 @@ export default function CrearPedido({user, puntos}: any) {
     setPuntoId(event.target.value as string);
   };
 
-  const [date, setDate] = useState(moment().format('YYYY-MM-DD'))
-  const handleSubmit = (event: any) => {
-    
+  const [date, setDate] = useState('')
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if(event.key === 'Enter') {
-      setSearch(event.target.value)
-      router.push(`${pathname}?search=${event.target.value}`, undefined)
-    }
     const data = new FormData(event.currentTarget);
     const newData = {
       forma: data.get('forma'),
       cantidadKl: Number(data.get('cantidadKl')),
       cantidadPrecio: Number(data.get('cantidadPrecio')),
-      fechaSolicitud: dayjs(date).format('YYYY-MM-DD'),
+      fechaSolicitud: moment(date).format('YYYY-MM-DD'),
       usuarioId,
       puntoId: Number(data.get('puntoId')),
       observacion: data.get('observaciones'),
@@ -77,44 +62,22 @@ export default function CrearPedido({user, puntos}: any) {
       dia2: data.get('dia2')
     };
     
-    if(!newData.forma || !usuarioId || !puntoId ) {
-      alert("Llena los campos obligatorios")
-    }else{
-      setLoading(true)
-      validateData(newData)
-    }
+    if(!newData.forma || !newData.usuarioId || !newData.puntoId ) alert("Llena los campos obligatorios")
+    saveData(newData)
   };
   const handleChange = (prop:string, value: string | null) => {
     setForm({...form, [prop]: value});
   };
   
  
-  const validateData = async (data: any) => {
-    const {status, pedido} = await validatePedido(data.usuarioId, data.puntoId)
- 
-    setUsuarioId('')
-    router.push(`${pathname}`)
-    if (pedido===0) {
-      saveData(data)
-    } else {
-      setOpenConfirm(true)
-      setDataPedido(data)
-      setTotalPedido(pedido)
-    }
-  }
-  
-
   const saveData = async (data: any) => {
-    const {status} = await createPedido(dataPedido || data)
+    const {status} = await createPedido(data)
     if (status) {
-      setLoading(false)
-      setOpenConfirm(false)
       setShowSnack(true)
-      setPuntoId('')
       setMessage("Pedido Guardado con exito")
     }
   }
-
+  console.log(user)
  
   return (
     <Container component="main" maxWidth="xs">
@@ -168,7 +131,7 @@ export default function CrearPedido({user, puntos}: any) {
             }
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
-                <Date setValueDate={setDate} value={date} />
+                <Date setValueDate={setDate} />
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={12}>
@@ -333,35 +296,17 @@ export default function CrearPedido({user, puntos}: any) {
               }
               
             </Grid>
-          {/* <Button
+          <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
             Guardar
-          </Button> */}
-          <LoadingButton
-            type="submit"
-            loading={loading}
-            loadingPosition="start"
-            startIcon={<SaveIcon />}
-            variant="contained"
-            fullWidth
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Guardar
-          </LoadingButton>
-
+          </Button>
         </Box>
       </Box>
       <Snack show={showSnack} setShow={()=>setShowSnack(false)} message={message} />
-      <AlertConfirm 
-        openConfirm={openConfirm} 
-        handleConfirm={()=>saveData(null)} 
-        handleClose={()=>setOpenConfirm(false)} 
-        title={`Hoy se han creado ${totalPedidosHoy} pedidos para este usuario, desea agregar otro?`} 
-      />
     </Container>
   );
 }

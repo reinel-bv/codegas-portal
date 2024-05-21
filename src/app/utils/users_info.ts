@@ -20,7 +20,7 @@ export const fields = [
   {label: "Razon Social", value: "razon_social", acceso:"cliente" },
   {label: "Direccion Factura", value: "direccion_factura", acceso:"cliente" },
   {label: "Codt", value: "codt", acceso:"cliente" },
-  {label: "Valor Unitario", value: "valorunitario", acceso:"cliente" },
+  {label: "Valor Unitario", value: "valorUnitario", acceso:"cliente" },
 ]
 
 export const tipos = [

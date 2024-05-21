@@ -1,8 +1,7 @@
-import URL from '../utils/url'
+const URL = "https://appcodegas.com/inf/informe/"
 export const ListInformes = [
-    {url: `${URL}informe/clientes`, text: "Todos Usuarios"},
-    {url: `${URL}informe/corporativos`, text: "Usuarios corporativos"},
-    {url: `${URL}informe/clientes`, text: "Clientes"},
+    {url: `${URL}users/corporativos`, text: "Usuarios corporativos"},
+    {url: `${URL}users/clientes`, text: "Clientes"},
     {url: `${URL}vehiculos`, text: "Vehiculos"},
     {url: `${URL}pedidos/trazabilidad`, text: "Trazabilidad"},
     {url: `${URL}pedidos/no_entregados`, text: "Pedidos no entregados"},

@@ -49,7 +49,6 @@ export const createTanque = async(date: any) =>{
 }
 
 export const addImagesTanque = async(date: any, id:number, type:string) =>{
- 
     try {
         const response = await fetch(`${URL}/tan/tanque/images/${id}/${type}`, {
             method: 'PUT', 
