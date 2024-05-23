@@ -1,21 +1,23 @@
 import React, { ReactElement } from 'react';
 
-import { RenderTanques } from './renderTanques'; 
+import { RenderOrder } from './RenderOrder'; 
 import InputSearch from "../components/search/search"
 
 const limit=10
-
-const Tanque = ({searchParams}: any): ReactElement => {
-  let {page, search} = searchParams
+const Order = ({searchParams}: any): ReactElement => {
+  let {page, search, newValue, idUser, acceso} = searchParams
   page = page || 0
 
   return (
     <>
       <InputSearch search={search} />
-      {RenderTanques({limit, search, page})} 
+      {
+      idUser
+      ?RenderOrder({idUser, acceso, limit, search, page, newValue})
+      :null} 
     </>
   )
 }
 
-export default Tanque
+export default Order
  
