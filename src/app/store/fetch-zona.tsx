@@ -1,16 +1,18 @@
 import URL from '../utils/url' 
 
-export const fetchZonasByUser = async (limit: any, start: any, idZona: any, type: any, search: any) => {
-    // start = start==0 ?0 :(start-1)*10
+export const fetchZonasByUser = async (limit: any, start: any, idZona: any, type: any, search: any, newValue: any) => {
+    start = start==0 ?0 :(start-1)*10
     try {
         const response = await fetch(`${URL}/users/zonas/${limit}/${start}/${idZona}/${type}/${search}`, {cache: 'no-store'});
+
         if(!response.ok){
             throw new Error(`Ruquest failed with status ${response.status}`)
         }
         const data = await response.json();
+
         return data;
     } catch (error) {
-        console.error(error);
+        console.log(error); 
         return []
     }
 };
@@ -39,14 +41,31 @@ export const ChangeValorUnitario = async(valor: any, idUser: any) =>{
     }
 }
 
-export const ChangeValorUnitarioAll = async(data: any) =>{
-    console.log(data)
+export const ChangeValorUnitarioAll = async(valorUnitario: any, type: any) =>{
+    const newData = {
+        valorUnitario,
+        type
+    }
+    try {
+        const response = await fetch(`${URL}/users/cambiarValorTodos`, {
+            method: 'PUT', 
+            body: JSON.stringify(newData),
+            cache: 'no-store'
+        });
+        const dataReponse = await response.json();
+        return dataReponse
+    } catch (error){
+        console.error(error)
+    }
+}
+
+export const ChangeValorUnitarioSelected = async(data: any) =>{
     const newData = {
         seleccionados: data
     }
- 
+   
     try {
-        const response = await fetch(`${URL}/users/cambiarValorTodos`, {
+        const response = await fetch(`${URL}/users/cambiarValorSelected`, {
             method: 'PUT', 
             body: JSON.stringify(newData),
             cache: 'no-store'
