@@ -7,7 +7,7 @@ const limit=10
 const Order = ({searchParams}: any): ReactElement => {
   let {page, search, newValue, idUser, acceso} = searchParams
   page = page || 0
-
+ 
   return (
     <>
       <InputSearch search={search} />

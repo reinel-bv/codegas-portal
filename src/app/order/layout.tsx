@@ -16,7 +16,6 @@ const LoyoutRevisiones = ({children}: {children: React.ReactNode}): ReactElement
   useEffect(()=>{
     router.push(`${pathname}?page=${page ??0}&idUser=${idUser}&acceso=${acceso}&search=${search ?? undefined}`);
   }, [idUser])
-  
   if(!user) redirect('/')
   return(
     <Box
