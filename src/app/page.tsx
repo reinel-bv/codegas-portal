@@ -30,7 +30,7 @@ export default function SignIn() {
   const {user, login}: any = useContext(DataContext)
   
   useEffect(()=>{
-    if(user?.email) redirect('/zonas')
+    if(user?.email) redirect('/order')
   }, [user])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -47,7 +47,7 @@ export default function SignIn() {
   const signIn = async (dataUser: any) =>{
     try {
       const response = await  login(dataUser)
-      redirect('/zonas')
+      redirect('/order')
     } catch (error) {
       console.log(error)
     }
