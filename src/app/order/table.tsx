@@ -59,15 +59,15 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
             <TableCell align="center">{zona}</TableCell>
             <TableCell align="center">{fechasolicitud}</TableCell>
             <TableCell align="center">
-              <Date setValueDate={(e: any) =>updateDate(e, _id)} value={'2024-05-24T00:00:00.000Z'} />
+              <Date setValueDate={(e: any) =>updateDate(e, _id)} value={fechaentrega} />
             </TableCell>
             <TableCell align="center">
               <SelectState newEstado={estado} setNewEstado={(e: any)=>updateStatus(e, _id)} />
             </TableCell>
             <TableCell align="center">
               <Button variant="contained">
-                <Link href={`carros?placa=${_id}&date=${fechaentrega ?moment(fechaentrega).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')}`} style={{color: "#ffffff", textDecoration: 'none'}}>
-                  {placa ?placa :"Sin Placa"}
+                <Link href={`carros?placa=${_id}&date=${fechaentrega ?moment(fechaentrega).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')}`} style={{color: "#2df7ff", textDecoration: 'none'}}>
+                  {placa ?placa :"Asignar"}
                 </Link>
               </Button>
             </TableCell>
@@ -89,9 +89,9 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
                           <TableCell align="center">Kilos</TableCell>
                           <TableCell align="center">Valor</TableCell>
                           <TableCell align="center">Cedula</TableCell>
-                          <TableCell align="center">F Creación</TableCell>
-                          <TableCell align="center">Obervacion</TableCell>
-                          <TableCell align="center">Imagen</TableCell>
+                          <TableCell align="center">F. Creación</TableCell>
+                          <TableCell align="center">Obervación</TableCell>
+                          <TableCell align="center">Remision</TableCell>
                           <TableCell align="center">&nbsp;</TableCell>
                         </TableRow>
                       </TableHead>
@@ -110,7 +110,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
                             {imagencerrar &&<Button variant="contained" onClick={()=>setShowDialog(true)}>Si</Button>}
                           </TableCell>
                           <TableCell align="center">
-                            {<Button variant="contained" onClick={()=>setOpenConfirm(_id)}>Resetear</Button>}
+                            {<Button variant="contained" onClick={()=>setOpenConfirm(_id)}>Restaurar</Button>}
                           </TableCell>
                         </TableRow>
                       </TableBody>
@@ -123,7 +123,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
          
           
           <AlertDialog showDialog={showDialog} setShowDialog={()=>setShowDialog(false)}>
-            {imagencerrar &&<Image src={imagencerrar} alt="codegas colombia" width={200} height={500}/> }
+            {imagencerrar &&<Image src={imagencerrar} alt="codegas colombia" width={320} height={520}/> }
           </AlertDialog>
 
     </Fragment>
