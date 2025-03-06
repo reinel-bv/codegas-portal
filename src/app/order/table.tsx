@@ -59,7 +59,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
             <TableCell align="center">{zona}</TableCell>
             <TableCell align="center">{fechasolicitud}</TableCell>
             <TableCell align="center">
-              <Date setValueDate={(e: any) =>updateDate(e, _id)} value={'2024-05-24T00:00:00.000Z'} />
+              <Date setValueDate={(e: any) =>updateDate(e, _id)} value={fechaentrega} />
             </TableCell>
             <TableCell align="center">
               <SelectState newEstado={estado} setNewEstado={(e: any)=>updateStatus(e, _id)} />
@@ -67,7 +67,7 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
             <TableCell align="center">
               <Button variant="contained">
                 <Link href={`carros?placa=${_id}&date=${fechaentrega ?moment(fechaentrega).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')}`} style={{color: "#ffffff", textDecoration: 'none'}}>
-                  {placa ?placa :"Sin Placa"}
+                  {placa ?placa :"Asignar"}
                 </Link>
               </Button>
             </TableCell>
