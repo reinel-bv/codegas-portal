@@ -7,7 +7,7 @@ const limit=10
 const idZone=110
 const type='BySearch'
 const Zona = ({searchParams}: any): ReactElement => {
-  let {page, search} = searchParams
+  let {page,search} = searchParams
   page = page || 0
 
   return (

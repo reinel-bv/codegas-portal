@@ -97,7 +97,7 @@ export default function Nav({children}: {children: React.ReactNode}) {
         <AppBar position="absolute" style={{ width: appBarWidth }}>
           <Toolbar
             sx={{
-              pr: '24px', // keep right padding when drawer closed
+              pr: '22px', // keep right padding when drawer closed
             }}
           >
             <IconButton

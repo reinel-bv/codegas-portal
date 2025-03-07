@@ -31,7 +31,7 @@ const LoyoutRevisiones = ({children}: {children: React.ReactNode}): ReactElement
       }}
     >
       <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }} component="section">
-          <Grid item xs={12}>
+          <Grid item xs={10}>
             {children}
           </Grid>
       </Container>

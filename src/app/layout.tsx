@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'App codegas',
-  description: 'App codegas',
+  description: 'Aplicación que tiene seguimiento de los pedidos',
 }
 
 export default function RootLayout({

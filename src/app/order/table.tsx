@@ -89,9 +89,9 @@ const RenderTanques = ({_id, codt, razon_social, cedula, direccion, creado, fech
                           <TableCell align="center">Kilos</TableCell>
                           <TableCell align="center">Valor</TableCell>
                           <TableCell align="center">Cedula</TableCell>
-                          <TableCell align="center">F Creación</TableCell>
-                          <TableCell align="center">Obervacion</TableCell>
-                          <TableCell align="center">Imagen</TableCell>
+                          <TableCell align="center">F. Creación</TableCell>
+                          <TableCell align="center">Obervación</TableCell>
+                          <TableCell align="center">Remisión</TableCell>
                           <TableCell align="center">&nbsp;</TableCell>
                         </TableRow>
                       </TableHead>
