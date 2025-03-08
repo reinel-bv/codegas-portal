@@ -90,7 +90,7 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 6,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -105,22 +105,22 @@ export default function Step4({ userId, zona, puntos }: { userId: any; zona: any
       <AlertDialog showDialog={showDialog} setShowDialog={() => setShowDialog(false)}>
         <Box component="form" noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={12}>
+            <Grid item xs={10} sm={12}>
                 <FormControl sx={{ width: 500 }}>
                 <TextField id="direccion" label="Dirección" name="direccion"/>
                 </FormControl>
             </Grid>
-            <Grid item xs={12} sm={12}>
+            <Grid item xs={10} sm={12}>
                 <FormControl sx={{ width: 500 }}>
                 <TextField id="capacidad" label="Capacidad Almacenamiento" name="capacidad"/>
                 </FormControl>
             </Grid>
-            <Grid item xs={12} sm={12}>
+            <Grid item xs={10} sm={12}>
                 <FormControl sx={{ width: 500 }}>
                 <TextField id="observacion" label="Observacion Ingreso Vehiculo" name="observacion"/>
                 </FormControl>
             </Grid>
-            <Grid item xs={12} sm={12}>
+            <Grid item xs={10} sm={12}>
               <FormControl fullWidth>
                 <InputLabel id="idZona">Zonas</InputLabel>
                 <Select

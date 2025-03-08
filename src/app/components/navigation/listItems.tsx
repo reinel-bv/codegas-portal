@@ -11,13 +11,14 @@ import {
   VerifiedUser, 
   BorderColor,
   FireTruck,
+  ShoppingBag,
 } from '@mui/icons-material/';
 import Link from 'next/link'
 const menuItems = [
   {link: "zonas", text: "Zonas", icon: <Map />},
   {link: "tanques", text: "Tanques", icon: <FireTruck/>},
   {link: "revisiones", text: "Revisiones", icon: <VerifiedUser />},
-  // {link: "vehiculos", text: "Vehiculos", icon: <ShoppingCart/>},
+  {link: "vehiculos", text: "Vehiculos", icon: <ShoppingBag/>},
   {link: "informes", text: "Informes", icon: <AssignmentTurnedIn />},
   {link: "crear-usuario", text: "Crear Usuario", icon: <People />}, 
   {link: "crear-pedido", text: "Crear Pedido", icon: <BorderColor />},

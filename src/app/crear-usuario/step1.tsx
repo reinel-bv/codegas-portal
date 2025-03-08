@@ -77,16 +77,17 @@ export default function Step1({data}: any) {
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 6,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
        
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={12}>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 2
+         }}>
+          <Grid container spacing={1}>
+            <Grid item xs={10} sm={12}>
               <FormControl fullWidth>
                 <InputLabel id="acceso">Acceso</InputLabel>
                 <Select
@@ -123,7 +124,7 @@ export default function Step1({data}: any) {
             }
             {
               newAcceso==="cliente"
-              &&<Grid item xs={12} sm={12}>
+              &&<Grid item xs={10} sm={12}>
                   <FormControl fullWidth>
                     <InputLabel id="tipo">Tipo</InputLabel>
                     <Select
@@ -141,9 +142,9 @@ export default function Step1({data}: any) {
                   </FormControl>
                 </Grid>
             }
-              <Grid item xs={12} sm={12}>
+              <Grid item xs={10} sm={12}>
                 <FormControl fullWidth>
-                  <InputLabel id="idPadre">Veo / Padre</InputLabel>
+                  <InputLabel id="idPadre">Vendedor</InputLabel>
                   <Select
                       labelId="idPadre"
                       id="idPadre"
@@ -157,13 +158,12 @@ export default function Step1({data}: any) {
                     </Select>
                 </FormControl>
               </Grid> 
-          
           </Grid>
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 2, mb: 1 }}
           >
             Guardar Usuario
           </Button>

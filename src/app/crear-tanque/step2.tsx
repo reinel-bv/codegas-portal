@@ -124,7 +124,7 @@ export default function Step2({ tanqueId }: any) {
           <Box
             key={value}
             sx={{
-              marginTop: 8,
+              marginTop: 4,
             }}
           >
             <Typography variant="h5" component="h6">{label}</Typography>

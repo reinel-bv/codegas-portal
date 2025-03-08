@@ -35,7 +35,7 @@ export default function SelectUser({data, userId, zona, puntos}: any) {
       <RenderTitleSteper />
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 4,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -44,8 +44,8 @@ export default function SelectUser({data, userId, zona, puntos}: any) {
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
-          Nuevo Tanque 
+        <Typography component="h2" variant="h5">
+          Nuevo Usuario
         </Typography>
         
         {

@@ -14,7 +14,7 @@ export default function CreateTanque({data, puntos, tanqueId, alerts}: any) {
   const [activeStep, setActiveStep] = useState(0);
 
   const RenderTitleSteper = () =>(
-    <Stepper activeStep={activeStep}  sx={{ mt: 3 }}>
+    <Stepper activeStep={activeStep}  sx={{ mt: 2 }}>
       {steps.map((label, index) => {
         const stepProps: { completed?: boolean } = {};
         const labelProps: {
@@ -36,7 +36,7 @@ export default function CreateTanque({data, puntos, tanqueId, alerts}: any) {
       <RenderTitleSteper />
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 6,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -45,7 +45,7 @@ export default function CreateTanque({data, puntos, tanqueId, alerts}: any) {
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography component="h3" variant="h5">
           Nuevo Tanque 
         </Typography>
         
@@ -60,7 +60,7 @@ export default function CreateTanque({data, puntos, tanqueId, alerts}: any) {
         }
 
 
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 1 }}>
           <Button onClick={()=>setActiveStep(activeStep-1)}>
             {activeStep>0 &&'Anterior'}
           </Button>

@@ -26,11 +26,11 @@ const LoyoutRevisiones = ({children}: {children: React.ReactNode}): ReactElement
             ? theme.palette.grey[100]
             : theme.palette.grey[900],
         flexGrow: 1,
-        height: '100vh',
+        height: 'auto', //160vh
         overflow: 'auto',
       }}
     >
-      <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }} component="section">
+      <Container maxWidth="xl" sx={{ mt: 1, mb: 1 }} component="section">
           <Grid item xs={10}>
             {children}
           </Grid>

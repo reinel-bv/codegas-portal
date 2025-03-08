@@ -31,7 +31,7 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(user);
     }
   };
-
+  
   useEffect(() => {
     const subscriber = onAuthStateChanged(auth, listenAuth);
     return () => {
